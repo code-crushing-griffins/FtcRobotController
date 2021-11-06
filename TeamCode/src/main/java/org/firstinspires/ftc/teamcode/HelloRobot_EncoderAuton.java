@@ -47,20 +47,52 @@ import com.qualcomm.robotcore.util.Range;
 public class HelloRobot_EncoderAuton extends LinearOpMode {
 
     private DcMotor motor1;
+    private DcMotor motor2;
+    private DcMotor motor3;
+    private DcMotor motor4;
+
+    static final double COUNTS_PER_MOTOR_REV = 28.0;
+    static final double DRIVE_GEAR_REDUCTION = 40.1;
+    static final double WHEEL_CIRCUMFERENCE_MM = 75 * Math.PI;
+
+    static final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
+    static final double COUNTS_PER_MM = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM;
+
 
     @Override
     public void runOpMode() {
         motor1 = hardwareMap.get(DcMotor.class, "motor1");
+        motor2 = hardwareMap.get(DcMotor.class, "motor2");
+        motor3 = hardwareMap.get(DcMotor.class, "motor3");
+        motor4 = hardwareMap.get(DcMotor.class, "motor4");
+
+        motor3.setDirection(DcMotorSimple.Direction.REVERSE);
+        motor4.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        int twoFeet = (int) (610 * COUNTS_PER_MM);
 
         motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor4.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        motor1.setTargetPosition(1000);
+        motor1.setTargetPosition(twoFeet);
+        motor2.setTargetPosition(twoFeet);
+        motor3.setTargetPosition(twoFeet);
+        motor4.setTargetPosition(twoFeet);
 
         motor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor3.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor4.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         motor1.setPower(0.8);
+        motor2.setPower(0.8);
+        motor3.setPower(0.8);
+        motor4.setPower(0.8);
+
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive() && motor1.isBusy()) {
