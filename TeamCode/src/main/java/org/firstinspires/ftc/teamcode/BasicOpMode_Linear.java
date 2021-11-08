@@ -80,7 +80,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            servo.setPosition (0.8);
+        servo.setPosition (0.8);
+
 //
 
 
