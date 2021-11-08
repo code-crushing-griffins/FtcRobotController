@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -41,51 +42,60 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 
-/**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
+@Autonomous(name="Encoded Motor Test")
 
-@TeleOp(name="Hello World2", group="Linear Opmode")
+public class HelloRobot_EncoderAuton extends LinearOpMode {
 
-public class BasicOpMode_Linear extends LinearOpMode {
+    private DcMotor motor1;
+    private DcMotor motor2;
+    private DcMotor motor3;
+    private DcMotor motor4;
 
+    static final double COUNTS_PER_MOTOR_REV = 28.0;
+    static final double DRIVE_GEAR_REDUCTION = 40.1;
+    static final double WHEEL_CIRCUMFERENCE_MM = 75 * Math.PI;
 
-    private ServoImpl servo;
+    static final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
+    static final double COUNTS_PER_MM = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM;
 
 
     @Override
     public void runOpMode() {
+        motor1 = hardwareMap.get(DcMotor.class, "motor1");
+        motor2 = hardwareMap.get(DcMotor.class, "motor2");
+        motor3 = hardwareMap.get(DcMotor.class, "motor3");
+        motor4 = hardwareMap.get(DcMotor.class, "motor4");
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-//        motor1  = hardwareMap.get(DcMotor.class, "motor1");
-//        motor2  = hardwareMap.get(DcMotor.class, "motor2");
-        servo = hardwareMap.get(ServoImpl.class, "servo");
+        motor3.setDirection(DcMotorSimple.Direction.REVERSE);
+        motor4.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        int twoFeet = (int) (610 * COUNTS_PER_MM);
 
-//
-
+        motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor4.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        motor1.setTargetPosition(twoFeet);
+        motor2.setTargetPosition(twoFeet);
+        motor3.setTargetPosition(twoFeet);
+        motor4.setTargetPosition(twoFeet);
+
+        motor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor3.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor4.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        motor1.setPower(0.8);
+        motor2.setPower(0.8);
+        motor3.setPower(0.8);
+        motor4.setPower(0.8);
+
+
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-        servo.setPosition (0.8);
-
-//
-
-
-
+        while (opModeIsActive() && motor1.isBusy()) {
         }
     }
 }
