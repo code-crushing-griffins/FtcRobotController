@@ -46,6 +46,14 @@ public class Main extends Robot {
             if (gamepad1.right_trigger != 0) {
                 strafeRight(gamepad1.right_trigger);
             }
+
+            if (gamepad2.y) {
+                moveFreightArmToTarget(1);
+            }
+
+            if (gamepad2.left_stick_y != 0) {
+                armDeliveryMotor.setPower(gamepad2.left_stick_y);
+            }
         }
     }
 
