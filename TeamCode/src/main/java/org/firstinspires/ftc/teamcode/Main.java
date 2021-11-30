@@ -4,6 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "Main", group = "Linear Opmode")
 public class Main extends Robot {
+
+    boolean motorToggle = false;
+
     @Override
     public void runOpMode() {
         super.runOpMode();
@@ -48,13 +51,36 @@ public class Main extends Robot {
             }
 
             if (gamepad2.y) {
+                moveFreightArmToTarget(3);
+            }
+
+
+            if (gamepad2.b) {
+                moveFreightArmToTarget(2);
+            }
+
+
+            if (gamepad2.a) {
                 moveFreightArmToTarget(1);
             }
 
-            if (gamepad2.left_stick_y != 0) {
-                armDeliveryMotor.setPower(gamepad2.left_stick_y);
+            if (gamepad2.x) {
+                if (motorToggle && intakeMotor.getPower() == 0) {
+                    intakeMotor.setPower(1);
+                    beltDriveMotor.setPower(1);//brian did not code this ('_') 69696969 
+                } else if (motorToggle && intakeMotor.getPower() != 0) {
+                    intakeMotor.setPower(0);
+                    beltDriveMotor.setPower(0);
+                }
+                motorToggle = false;
             }
+
+            if (!gamepad2.x) {
+                motorToggle = true;
+            }
+
         }
+
     }
 
 }

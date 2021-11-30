@@ -10,6 +10,11 @@ public abstract class Robot extends LinearOpMode {
     DcMotor backLeftMotor; // 2
     DcMotor backRightMotor; // 3
     DcMotor armDeliveryMotor;
+    DcMotor intakeMotor;
+    DcMotor beltDriveMotor;
+
+
+
 
     @Override
     public void runOpMode() {
@@ -18,6 +23,12 @@ public abstract class Robot extends LinearOpMode {
         backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
         backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
         armDeliveryMotor =  hardwareMap.get(DcMotor.class, "armDeliveryMotor");
+        intakeMotor =  hardwareMap.get(DcMotor.class, "intakeMotor");
+        beltDriveMotor =  hardwareMap.get(DcMotor.class, "beltDriveMotor");
+
+
+
+
 
         frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -85,6 +96,29 @@ public abstract class Robot extends LinearOpMode {
             return;
         }
 
+        armDeliveryMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        int desiredMMToMove = 0;
+
+
+        if (postion == 3) {
+            // do something with desiredMMToMove
+            desiredMMToMove = 381;
+        }
+
+
+        if (postion == 2) {
+            // do something with desiredMMToMove
+            desiredMMToMove = 216;
+        }
+
+
+        if (postion == 1) {
+            // do something with desiredMMToMove
+            desiredMMToMove = 76;
+        }
+
+
         armDeliveryMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         final double COUNTS_PER_MOTOR_REV = 4.0;
@@ -94,11 +128,11 @@ public abstract class Robot extends LinearOpMode {
         final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
         final double COUNTS_PER_MM = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM;
 
-        int temporaryPosition = (int) COUNTS_PER_MM * 20;
 
-        armDeliveryMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        int position3 = (int) COUNTS_PER_MM * desiredMMToMove;
 
-        armDeliveryMotor.setTargetPosition(temporaryPosition);
+
+        armDeliveryMotor.setTargetPosition(position3);
 
         armDeliveryMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
