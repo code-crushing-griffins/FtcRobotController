@@ -51,32 +51,43 @@ public class Main extends Robot {
             }
 
             if (gamepad2.y) {
-                moveFreightArmToTarget(3);
+                moveFreightArmToTarget(ActuatorStates.HIGH);
             }
 
 
             if (gamepad2.b) {
-                moveFreightArmToTarget(2);
+                moveFreightArmToTarget(ActuatorStates.MIDDLE);
             }
 
 
             if (gamepad2.a) {
-                moveFreightArmToTarget(1);
+                moveFreightArmToTarget(ActuatorStates.ZERO);
             }
 
             if (gamepad2.x) {
                 if (motorToggle && intakeMotor.getPower() == 0) {
-                    intakeMotor.setPower(1);
-                    beltDriveMotor.setPower(1);//brian did not code this ('_') 69696969 
+                    intakeMotor.setPower(0.75);
                 } else if (motorToggle && intakeMotor.getPower() != 0) {
                     intakeMotor.setPower(0);
-                    beltDriveMotor.setPower(0);
                 }
                 motorToggle = false;
             }
 
             if (!gamepad2.x) {
                 motorToggle = true;
+            }
+
+            setDuckRotator(gamepad2.right_bumper);
+
+
+            if (gamepad2.dpad_down) {
+                moveDumper(ActuatorStates.ZERO);
+            }
+            if (gamepad2.dpad_right) {
+                moveDumper(ActuatorStates.MIDDLE);
+            }
+            if (gamepad2.dpad_up) {
+                moveDumper(ActuatorStates.HIGH);
             }
 
         }
