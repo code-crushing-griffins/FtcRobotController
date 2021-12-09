@@ -130,12 +130,7 @@ public abstract class Robot extends LinearOpMode {
 
 
 
-    // position corresponds to the freight target thing
-    // it can be either 1 2 or 3
     void moveFreightArmToTarget(ActuatorStates desiredState) {
-//        if (armDeliveryMotor.isBusy()) {
-//            return;
-//        }
 
         armDeliveryMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -210,9 +205,6 @@ public abstract class Robot extends LinearOpMode {
 
         armDeliveryMotor.setVelocity(250);
 
-//        while (opModeIsActive() && armDeliveryMotor.isBusy()) {
-//            updateTelemetry();
-//        }
         // always set the motor to the default direction so that our
         // state transition logic always works as intended
         armDeliveryMotor.setDirection(Direction.FORWARD);
@@ -220,9 +212,6 @@ public abstract class Robot extends LinearOpMode {
 
     // basically copy and paste of the linear slide code
     void moveDumper(ActuatorStates desiredState) {
-//        if (beltDriveMotor.isBusy()) {
-//            return;
-//        }
 
         beltDriveMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -297,9 +286,6 @@ public abstract class Robot extends LinearOpMode {
 
         beltDriveMotor.setVelocity(250);
 
-//        while (opModeIsActive() && beltDriveMotor.isBusy()) {
-//            updateTelemetry();
-//        }
         // always set the motor to the default direction so that our
         // state transition logic always works as intended
         beltDriveMotor.setDirection(Direction.FORWARD);
