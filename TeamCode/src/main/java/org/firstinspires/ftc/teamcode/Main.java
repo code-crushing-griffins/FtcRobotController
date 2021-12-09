@@ -61,13 +61,14 @@ public class Main extends Robot {
 
 
             if (gamepad2.a) {
-                moveFreightArmToTarget(1);
+                moveFreightArmToTarget(1);//why are you reading this? stop reading this, just stop
+
             }
 
             if (gamepad2.x) {
                 if (motorToggle && intakeMotor.getPower() == 0) {
-                    intakeMotor.setPower(1);
-                    beltDriveMotor.setPower(1);//brian did not code this ('_') 69696969 
+                    intakeMotor.setPower(0.5);
+                    beltDriveMotor.setPower(0.5);//brian did not code this ('_') 69696969 stopreading
                 } else if (motorToggle && intakeMotor.getPower() != 0) {
                     intakeMotor.setPower(0);
                     beltDriveMotor.setPower(0);
@@ -79,8 +80,25 @@ public class Main extends Robot {
                 motorToggle = true;
             }
 
+
+
+
+             }
+
+            intakeMotorMove(gamepad2.left_stick_y);
+
+            beltDriveMove(gamepad2.left_stick_y);
+
+            duckRotatorMotorMove(gamepad2.left_trigger);
+
+            armDeliveryMotorMove(gamepad2.right_stick_y);
+
+
+
+
+
         }
 
     }
 
-}
+
