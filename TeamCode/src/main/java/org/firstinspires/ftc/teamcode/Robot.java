@@ -77,17 +77,17 @@ public abstract class Robot extends LinearOpMode {
     }
 
     void strafeLeft(double power) {
-        frontLeftMotor.setPower(-power);
-        frontRightMotor.setPower(-power);
-        backLeftMotor.setPower(-power);
-        backRightMotor.setPower(-power);
-    }
-
-    void strafeRight(double power) {
         frontLeftMotor.setPower(power);
         frontRightMotor.setPower(power);
         backLeftMotor.setPower(power);
         backRightMotor.setPower(power);
+    }
+
+    void strafeRight(double power) {
+        frontLeftMotor.setPower(-power);
+        frontRightMotor.setPower(-power);
+        backLeftMotor.setPower(-power);
+        backRightMotor.setPower(-power);
     }
 
     void stopMotors() {

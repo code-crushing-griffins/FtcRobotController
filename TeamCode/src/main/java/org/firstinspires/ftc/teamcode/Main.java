@@ -19,23 +19,23 @@ public class Main extends Robot {
 
             // Left side goes forward
             if (gamepad1.left_stick_y <= 0) {
-                leftSideGoForwards(gamepad1.left_stick_y);
+                leftSideGoForwards(-gamepad1.left_stick_y);
             }
 
             // Right side go forwards
             if (gamepad1.right_stick_y <= 0) {
-                rightSideGoForwards(gamepad1.right_stick_y);
+                rightSideGoForwards(-gamepad1.right_stick_y);
             }
 
 
             // left side goes backwards
             if (gamepad1.left_stick_y >= 0) {
-                leftSideGoBackwards(-gamepad1.left_stick_y);
+                leftSideGoBackwards(gamepad1.left_stick_y);
             }
 
             // right side goes backwards
             if (gamepad1.right_stick_y >= 0) {
-                rightSideGoBackwards(-gamepad1.right_stick_y);
+                rightSideGoBackwards(gamepad1.right_stick_y);
             }
 
 
@@ -66,7 +66,10 @@ public class Main extends Robot {
 
             if (gamepad2.x) {
                 if (motorToggle && intakeMotor.getPower() == 0) {
-                    intakeMotor.setPower(0.75);
+                    intakeMotor.setPower(1.0);
+
+
+
                 } else if (motorToggle && intakeMotor.getPower() != 0) {
                     intakeMotor.setPower(0);
                 }
@@ -89,6 +92,17 @@ public class Main extends Robot {
             if (gamepad2.dpad_up) {
                 moveDumper(ActuatorStates.HIGH);
             }
+
+            if (gamepad2.left_bumper) {
+                duckRotator.setDirection(duckRotator.getDirection().inverted());
+            }
+
+
+            beltDriveMotor.setPower(gamepad2.left_stick_y);
+
+            duckRotator.setPower(gamepad2.left_trigger);
+
+            armDeliveryMotor.setPower(gamepad2.right_stick_y);
 
         }
 
