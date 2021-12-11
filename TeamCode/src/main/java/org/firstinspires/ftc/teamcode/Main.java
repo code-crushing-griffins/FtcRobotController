@@ -50,48 +50,34 @@ public class Main extends Robot {
                 strafeRight(gamepad1.right_trigger);
             }
 
-            if (gamepad2.y) {
-                moveFreightArmToTarget(ActuatorStates.HIGH);
-            }
+//            if (gamepad2.y) {
+//                moveFreightArmToTarget(ActuatorStates.HIGH);
+//            }
+//
+//
+//            if (gamepad2.b) {
+//                moveFreightArmToTarget(ActuatorStates.MIDDLE);
+//            }
+//
+//
+//            if (gamepad2.a) {
+//                moveFreightArmToTarget(ActuatorStates.ZERO);
+//            }
 
-
-            if (gamepad2.b) {
-                moveFreightArmToTarget(ActuatorStates.MIDDLE);
-            }
-
-
-            if (gamepad2.a) {
-                moveFreightArmToTarget(ActuatorStates.ZERO);
-            }
-
-            if (gamepad2.x) {
-                if (motorToggle && intakeMotor.getPower() == 0) {
-                    intakeMotor.setPower(1.0);
-
-
-
-                } else if (motorToggle && intakeMotor.getPower() != 0) {
-                    intakeMotor.setPower(0);
-                }
-                motorToggle = false;
-            }
-
-            if (!gamepad2.x) {
-                motorToggle = true;
-            }
+            intakeMotorToggle(gamepad2.x);
 
             setDuckRotator(gamepad2.right_bumper);
 
 
-            if (gamepad2.dpad_down) {
-                moveDumper(ActuatorStates.ZERO);
-            }
-            if (gamepad2.dpad_right) {
-                moveDumper(ActuatorStates.MIDDLE);
-            }
-            if (gamepad2.dpad_up) {
-                moveDumper(ActuatorStates.HIGH);
-            }
+//            if (gamepad2.dpad_down) {
+//                moveDumper(ActuatorStates.ZERO);
+//            }
+//            if (gamepad2.dpad_right) {
+//                moveDumper(ActuatorStates.MIDDLE);
+//            }
+//            if (gamepad2.dpad_up) {
+//                moveDumper(ActuatorStates.HIGH);
+//            }
 
             if (gamepad2.left_bumper) {
                 duckRotator.setDirection(duckRotator.getDirection().inverted());

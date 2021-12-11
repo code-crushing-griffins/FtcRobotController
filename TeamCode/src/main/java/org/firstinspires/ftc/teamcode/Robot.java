@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public abstract class Robot extends LinearOpMode {
     DcMotor frontLeftMotor; // 0
@@ -26,6 +27,7 @@ public abstract class Robot extends LinearOpMode {
     private  ActuatorStates dumperState = ActuatorStates.ZERO;
 
     private boolean duckToggle = true;
+    private boolean intakeToggle = true;
 
 
 
@@ -94,7 +96,7 @@ public abstract class Robot extends LinearOpMode {
         frontLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
         backLeftMotor.setPower(0);
-        backRightMotor.setPower(0);
+        backRightMotor.setPower(0);//
     }
 
     void setDuckRotator(boolean button) {
@@ -112,6 +114,21 @@ public abstract class Robot extends LinearOpMode {
         }
     }
 
+    void intakeMotorToggle(boolean button) {
+        if (intakeToggle && button) {
+            intakeToggle = false;
+            if (intakeMotor.getPower() == 0) {
+                intakeMotor.setPower(1);
+            } else {
+                intakeMotor.setPower(0);
+            }
+        }
+
+        if (!button) {
+            intakeToggle = true;
+        }
+    }
+
     void updateTelemetry() {
         telemetry.addData("frontLeftMotor", this.frontLeftMotor.getPower());
         telemetry.addData("backLeftMotor", this.backLeftMotor.getPower());
@@ -126,6 +143,107 @@ public abstract class Robot extends LinearOpMode {
         telemetry.addData("dumper position", beltDriveMotor.getCurrentPosition());
         telemetry.addData("slide position", armDeliveryMotor.getCurrentPosition());
         telemetry.update();
+    }
+
+    void strafeRightInMillimeters(int mm) {
+        strafeInMillimeters(mm);
+
+    }
+
+    void strafeLeftInMillimeters(int mm) {
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        strafeInMillimeters(mm);
+        // we want to make sure when drivers take control that they are not inverse
+        // so we always reset the motor direction when we strafe left
+        resetMotorDirection();
+    }
+
+    void resetMotorDirection() {
+        frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
+        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backRightMotor.setDirection(DcMotor.Direction.REVERSE);
+    }
+
+    void strafeInMillimeters(int mm) {
+
+        final double COUNTS_PER_MOTOR_REV = 28.0;
+        final double DRIVE_GEAR_REDUCTION = 40.1;
+        final double WHEEL_CIRCUMFERENCE_MM = 75 * Math.PI;
+
+        final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
+        final double COUNTS_PER_MM = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM;
+
+        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        int target = (int) COUNTS_PER_MM * mm;
+
+        frontLeftMotor.setTargetPosition(target);
+        frontRightMotor.setTargetPosition(target);
+        backLeftMotor.setTargetPosition(target);
+        backRightMotor.setTargetPosition(target);
+
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        frontLeftMotor.setPower(0.8);
+        frontRightMotor.setPower(0.8);
+        backLeftMotor.setPower(0.8);
+        backRightMotor.setPower(0.8);
+    }
+
+    void driveForwardsInMillimeters(int mm) {
+
+        final double COUNTS_PER_MOTOR_REV = 28.0;
+        final double DRIVE_GEAR_REDUCTION = 40.1;
+        final double WHEEL_CIRCUMFERENCE_MM = 75 * Math.PI;
+
+        final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
+        final double COUNTS_PER_MM = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM;
+
+        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        int target = (int) COUNTS_PER_MM * mm;
+
+        frontLeftMotor.setTargetPosition(target);
+        frontRightMotor.setTargetPosition(target);
+        backLeftMotor.setTargetPosition(target);
+        backRightMotor.setTargetPosition(target);
+
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        // forwards right side
+//        frontRightMotor.setPower(power);
+//        backRightMotor.setPower(-power);
+
+        frontLeftMotor.setPower(0.8);
+        frontRightMotor.setPower(0.8);
+        backLeftMotor.setPower(0.8);
+        backRightMotor.setPower(0.8);
+    }
+
+    void rotateDuckForSeconds(int seconds) {
+        ElapsedTime time = new ElapsedTime();
+        duckRotator.setPower(.5);
+        while (opModeIsActive() && time.seconds() <= seconds) {
+            updateTelemetry();
+        }
+        duckRotator.setPower(0);
     }
 
 
@@ -189,7 +307,7 @@ public abstract class Robot extends LinearOpMode {
 
         final double COUNTS_PER_MOTOR_REV = 4.0;
         final double DRIVE_GEAR_REDUCTION = 72.1;
-        final double WHEEL_CIRCUMFERENCE_MM = 35 * Math.PI;
+        final double WHEEL_CIRCUMFERENCE_MM = 14.4 * Math.PI;
 
         final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
         final double COUNTS_PER_MM = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM;
@@ -270,7 +388,7 @@ public abstract class Robot extends LinearOpMode {
 
         final double COUNTS_PER_MOTOR_REV = 4.0;
         final double DRIVE_GEAR_REDUCTION = 72.1;
-        final double WHEEL_CIRCUMFERENCE_MM = 32 * Math.PI;
+        final double WHEEL_CIRCUMFERENCE_MM = 14.4 * Math.PI;
 
         final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
         final double COUNTS_PER_MM = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM;

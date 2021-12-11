@@ -42,9 +42,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 
-@Autonomous(name="Strafe Left And Right")
+@Autonomous(name="Autonomous BABY")
 
-public class HelloWorldAutonomous extends Robot {
+public class BlueAutonomous extends Robot {
     @Override
     public void runOpMode() {
 
@@ -52,16 +52,15 @@ public class HelloWorldAutonomous extends Robot {
 
         waitForStart();
 
-//        strafeLeftInMillimeters(610);
-//
-//        strafeRightInMillimeters(610);
+
+        strafeRightInMillimeters(787);
 
 
-
+        rotateDuckForSeconds(4);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive() && frontRightMotor.isBusy()) {
-
+            updateTelemetry();
         }
     }
 }
