@@ -42,9 +42,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 
-@Autonomous(name="Autonomous BABY")
+@Autonomous(name="Go Backwards")
 
-public class BlueAutonomous extends Robot {
+public class GoBackwards extends Robot {
     @Override
     public void runOpMode() {
 
@@ -52,11 +52,7 @@ public class BlueAutonomous extends Robot {
 
         waitForStart();
 
-
-        strafeRightInMillimeters(787);
-
-
-        rotateDuckForSeconds(4);
+        goBackwardsInMilliseconds(2500);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive() && frontRightMotor.isBusy()) {

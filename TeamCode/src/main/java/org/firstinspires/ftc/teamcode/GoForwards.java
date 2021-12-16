@@ -30,21 +30,11 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoImpl;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-@Disabled
-@Autonomous(name="Dumper for both")
 
-public class FreightDump extends Robot {
+@Autonomous(name="Go Forwards")
+
+public class GoForwards extends Robot {
     @Override
     public void runOpMode() {
 
@@ -52,14 +42,7 @@ public class FreightDump extends Robot {
 
         waitForStart();
 
-
-        moveFreightArmToTarget(ActuatorStates.HIGH);
-
-
-        moveDumper(ActuatorStates.HIGH);
-
-        driveForwardsInMillimeters(200);
-
+        goStraightInMilliseconds(2500);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive() && frontRightMotor.isBusy()) {

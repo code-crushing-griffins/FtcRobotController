@@ -246,6 +246,29 @@ public abstract class Robot extends LinearOpMode {
         duckRotator.setPower(0);
     }
 
+    void goStraightInMilliseconds(int ms) {
+        ElapsedTime timer = new ElapsedTime();
+        leftSideGoForwards(1.0);
+        rightSideGoForwards(1.0);
+        while(opModeIsActive() && timer.milliseconds() < ms) {
+            updateTelemetry();
+        }
+        stopMotors();
+    }
+
+    void goBackwardsInMilliseconds(int ms) {
+        ElapsedTime timer = new ElapsedTime();
+        leftSideGoForwards(-1.0);
+        rightSideGoForwards(-
+
+
+                1.0);
+        while(opModeIsActive() && timer.milliseconds() < ms) {
+            updateTelemetry();
+        }
+        stopMotors();
+    }
+
 
 
     void moveFreightArmToTarget(ActuatorStates desiredState) {

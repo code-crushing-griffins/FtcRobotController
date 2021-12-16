@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.hardware.ServoImpl;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-
+@Disabled
 @Autonomous(name="Encoded Motor Test")
 
 public class HelloRobot_EncoderAuton extends LinearOpMode {
