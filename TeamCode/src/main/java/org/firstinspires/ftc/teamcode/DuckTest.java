@@ -51,6 +51,9 @@ public class DuckTest extends Robot {
 
         waitForStart();
 
+        servo.setPosition(0);
+        servo.setPosition(.99);
+
         deliverDuck();
 
 

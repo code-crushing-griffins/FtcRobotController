@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public abstract class Robot extends LinearOpMode {
@@ -16,6 +17,7 @@ public abstract class Robot extends LinearOpMode {
     DcMotor intakeMotor;
     DcMotorEx beltDriveMotor;
     DcMotor duckRotator;
+    Servo servo;
 
     public enum ActuatorStates {
         ZERO,
@@ -42,6 +44,7 @@ public abstract class Robot extends LinearOpMode {
         intakeMotor =  hardwareMap.get(DcMotor.class, "intakeMotor");
         beltDriveMotor =  (DcMotorEx) hardwareMap.get(DcMotor.class, "beltDriveMotor");
         duckRotator = hardwareMap.get(DcMotor.class, "duckRotatorMotor");
+        servo = hardwareMap.get(Servo.class, "servo");
 
 
 
