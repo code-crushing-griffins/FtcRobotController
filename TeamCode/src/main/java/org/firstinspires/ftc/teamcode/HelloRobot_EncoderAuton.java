@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -41,16 +42,14 @@ import com.qualcomm.robotcore.hardware.ServoImpl;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@Disabled
 @Autonomous(name="Encoded Motor Test")
 
 public class HelloRobot_EncoderAuton extends LinearOpMode {
 
-    private DcMotor motor1;
-    private DcMotor motor2;
-    private DcMotor motor3;
-    private DcMotor motor4;
-
+    DcMotor frontLeftMotor; // 0
+    DcMotor frontRightMotor; // 1
+    DcMotor backLeftMotor; // 2
+    DcMotor backRightMotor; // 3
     static final double COUNTS_PER_MOTOR_REV = 28.0;
     static final double DRIVE_GEAR_REDUCTION = 40.1;
     static final double WHEEL_CIRCUMFERENCE_MM = 75 * Math.PI;
@@ -61,41 +60,42 @@ public class HelloRobot_EncoderAuton extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        motor1 = hardwareMap.get(DcMotor.class, "motor1");
-        motor2 = hardwareMap.get(DcMotor.class, "motor2");
-        motor3 = hardwareMap.get(DcMotor.class, "motor3");
-        motor4 = hardwareMap.get(DcMotor.class, "motor4");
+        frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
+        frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
+        backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
+        backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
 
-        motor3.setDirection(DcMotorSimple.Direction.REVERSE);
-        motor4.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backRightMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        int twoFeet = (int) (610 * COUNTS_PER_MM);
+//        int twoFeet = (int) (610 * COUNTS_PER_MM);
+        int meter = (int) (1000 * COUNTS_PER_MM);
 
-        motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor4.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        motor1.setTargetPosition(twoFeet);
-        motor2.setTargetPosition(twoFeet);
-        motor3.setTargetPosition(twoFeet);
-        motor4.setTargetPosition(twoFeet);
+        frontLeftMotor.setTargetPosition(meter);
+        frontRightMotor.setTargetPosition(meter);
+        backLeftMotor.setTargetPosition(meter);
+        backRightMotor.setTargetPosition(meter);
 
-        motor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor3.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor4.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        motor1.setPower(0.8);
-        motor2.setPower(0.8);
-        motor3.setPower(0.8);
-        motor4.setPower(0.8);
+        frontLeftMotor.setPower(0.8);
+        frontRightMotor.setPower(0.8);
+        backLeftMotor.setPower(0.8);
+        backRightMotor.setPower(0.8);
 
 
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive() && motor1.isBusy()) {
+        while (opModeIsActive() && frontLeftMotor.isBusy()) {
         }
     }
 }

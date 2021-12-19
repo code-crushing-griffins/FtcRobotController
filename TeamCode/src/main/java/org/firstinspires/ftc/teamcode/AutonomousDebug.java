@@ -30,21 +30,11 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoImpl;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-@Disabled
-@Autonomous(name="Dumper for both")
 
-public class FreightDump extends Robot {
+@Autonomous(name="AutonomousDebug")
+
+public class AutonomousDebug extends Robot {
     @Override
     public void runOpMode() {
 
@@ -52,18 +42,24 @@ public class FreightDump extends Robot {
 
         waitForStart();
 
-
-//        moveFreightArmToTarget(ActuatorStates.HIGH);
+//        turnRightInDegrees(90);
+//        turnRightInDegrees(90);
+//        turnRightInDegrees(90);
+//        turnRightInDegrees(90);
 //
-//
-//        moveDumper(ActuatorStates.HIGH);
-//
-//        driveForwardsInMillimeters(200);
+//        turnLeftInDegrees(90);
+//        turnLeftInDegrees(90);
+//        turnLeftInDegrees(90);
+//        turnLeftInDegrees(90);
 
+        strafeLeftInMillimeters(500);
+        strafeRightInMillimeters(1000);
+        strafeLeftInMillimeters(500);
+        turnRightInDegrees(360);
+        turnLeftInDegrees(90);
+        turnLeftInDegrees(90);
+        turnLeftInDegrees(90);
+        turnLeftInDegrees(90);
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive() && frontRightMotor.isBusy()) {
-            updateTelemetry();
-        }
     }
 }
