@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoControllerEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public abstract class Robot extends LinearOpMode {
@@ -13,11 +15,12 @@ public abstract class Robot extends LinearOpMode {
     DcMotorEx frontRightMotor; // 1
     DcMotorEx backLeftMotor; // 2
     DcMotorEx backRightMotor; // 3
-    DcMotorEx armDeliveryMotor;
+    // DcMotorEx armDeliveryMotor;
     DcMotor intakeMotor;
-    DcMotorEx beltDriveMotor;
+    DcMotorEx linearSlideMotor;
     DcMotor duckRotator;
-    Servo servo;
+    CRServo freightFlipperServo;
+    Servo freightDumperServo;
 
     public enum ActuatorStates {
         ZERO,
@@ -26,7 +29,7 @@ public abstract class Robot extends LinearOpMode {
     }
 
     private final double DRIVE_TRAIN_COUNTS_PER_MOTOR_REV = 28.0;
-    private final double DRIVE_TRAIN_GEAR_REDUCTION = 40.1;
+    private final double DRIVE_TRAIN_GEAR_REDUCTION = 26.9;
     private final double DRIVE_TRAIN_WHEEL_CIRCUMFERENCE_MM = 75 * Math.PI;
 
     private final double DRIVE_TRAIN_COUNTS_PER_WHEEL_REV = DRIVE_TRAIN_COUNTS_PER_MOTOR_REV * DRIVE_TRAIN_GEAR_REDUCTION;
@@ -45,12 +48,12 @@ public abstract class Robot extends LinearOpMode {
         frontRightMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "frontRightMotor");
         backLeftMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "backLeftMotor");
         backRightMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "backRightMotor");
-        armDeliveryMotor =  (DcMotorEx) hardwareMap.get(DcMotor.class, "armDeliveryMotor");
+        // armDeliveryMotor =  (DcMotorEx) hardwareMap.get(DcMotor.class, "armDeliveryMotor");
         intakeMotor =  hardwareMap.get(DcMotor.class, "intakeMotor");
-        beltDriveMotor =  (DcMotorEx) hardwareMap.get(DcMotor.class, "beltDriveMotor");
+        linearSlideMotor =  (DcMotorEx) hardwareMap.get(DcMotor.class, "linearSlideMotor");
         duckRotator = hardwareMap.get(DcMotor.class, "duckRotatorMotor");
-        servo = hardwareMap.get(Servo.class, "servo");
-
+        freightFlipperServo = hardwareMap.get(CRServo.class, "freightFlipperServo");
+        freightDumperServo = hardwareMap.get(Servo.class, "freightDumperServo");
 
 
 
@@ -60,8 +63,8 @@ public abstract class Robot extends LinearOpMode {
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backRightMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        armDeliveryMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        beltDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        armDeliveryMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        linearSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
 
@@ -98,6 +101,14 @@ public abstract class Robot extends LinearOpMode {
         frontRightMotor.setPower(-power);
         backLeftMotor.setPower(-power);
         backRightMotor.setPower(-power);
+    }
+
+    // this will set the power of the continuous rotation servo
+    // that is used to flip the freight off of the side of
+    // our freight loader. The intention is that it is used
+    // to place freight on the shared shipping hub
+    void setCRServoPower(double power) {
+        freightFlipperServo.setPower(power);
     }
 
     void stopMotors() {
@@ -144,15 +155,14 @@ public abstract class Robot extends LinearOpMode {
         telemetry.addData("backRightMotor", this.backRightMotor.getPower());
         telemetry.addData("slide state", slideState);
         telemetry.addData("dumper state", dumperState);
-        telemetry.addData("slide motor busy?", armDeliveryMotor.isBusy());
-        telemetry.addData("dumper motor busy?", beltDriveMotor.isBusy());
-        telemetry.addData("slide motor velocity", armDeliveryMotor.getVelocity());
-        telemetry.addData("dumper motor velocity", beltDriveMotor.getVelocity());
-        telemetry.addData("dumper position", beltDriveMotor.getCurrentPosition());
+        telemetry.addData("dumper motor busy?", linearSlideMotor.isBusy());
+        telemetry.addData("dumper motor velocity", linearSlideMotor.getVelocity());
+        telemetry.addData("dumper position", linearSlideMotor.getCurrentPosition());
         telemetry.addData("frontLeftMotor busy", frontLeftMotor.isBusy());
         telemetry.addData("frontRightMotor busy", frontLeftMotor.isBusy());
         telemetry.addData("backLeftMotor busy", backLeftMotor.isBusy());
         telemetry.addData("backRightMotor busy", backRightMotor.isBusy());
+        telemetry.addData("freightDumperServo position", freightDumperServo.getPosition());
         telemetry.update();
     }
 
@@ -438,7 +448,7 @@ public abstract class Robot extends LinearOpMode {
 //    // basically copy and paste of the linear slide code
 //    void moveDumper(ActuatorStates desiredState) {
 //
-//        beltDriveMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        linearSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //
 //        int desiredMMToMove = 0;
 //
@@ -462,7 +472,7 @@ public abstract class Robot extends LinearOpMode {
 //            case MIDDLE:
 //                if (desiredState == ActuatorStates.ZERO) {
 //                    desiredMMToMove = 100;
-//                    beltDriveMotor.setDirection(Direction.REVERSE);
+//                    linearSlideMotor.setDirection(Direction.REVERSE);
 //                    this.dumperState = ActuatorStates.ZERO;
 //                }
 //                if (desiredState == ActuatorStates.MIDDLE) {
@@ -476,12 +486,12 @@ public abstract class Robot extends LinearOpMode {
 //            case HIGH:
 //                if (desiredState == ActuatorStates.ZERO) {
 //                    desiredMMToMove = 200;
-//                    beltDriveMotor.setDirection(Direction.REVERSE);
+//                    linearSlideMotor.setDirection(Direction.REVERSE);
 //                    this.dumperState = ActuatorStates.ZERO;
 //                }
 //                if (desiredState == ActuatorStates.MIDDLE) {
 //                    desiredMMToMove = 100;
-//                    beltDriveMotor.setDirection(Direction.REVERSE);
+//                    linearSlideMotor.setDirection(Direction.REVERSE);
 //                    this.dumperState = ActuatorStates.MIDDLE;
 //                }
 //                if (desiredState == ActuatorStates.HIGH) {
@@ -504,15 +514,15 @@ public abstract class Robot extends LinearOpMode {
 //        int position = (int) COUNTS_PER_MM * desiredMMToMove;
 //
 //
-//        beltDriveMotor.setTargetPosition(position);
+//        linearSlideMotor.setTargetPosition(position);
 //
 //
-//        beltDriveMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        linearSlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //
-//        beltDriveMotor.setVelocity(250);
+//        linearSlideMotor.setVelocity(250);
 //
 //        // always set the motor to the default direction so that our
 //        // state transition logic always works as intended
-//        beltDriveMotor.setDirection(Direction.FORWARD);
+//        linearSlideMotor.setDirection(Direction.FORWARD);
 //    }
 }

@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.hardware.ServoImpl;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-
+@Disabled
 @Autonomous(name="Duck Test")
 public class DuckTest extends Robot {
     @Override
@@ -51,8 +51,8 @@ public class DuckTest extends Robot {
 
         waitForStart();
 
-        servo.setPosition(0);
-        servo.setPosition(.99);
+//        servo.setPosition(0);
+//        servo.setPosition(.99);
 
         deliverDuck();
 

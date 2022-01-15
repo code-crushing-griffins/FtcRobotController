@@ -30,36 +30,51 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.ServoImpl;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @Autonomous(name="AutonomousDebug")
-
 public class AutonomousDebug extends Robot {
+
+
+    private DcMotor motor;
+
+
     @Override
     public void runOpMode() {
-
         super.runOpMode();
-
         waitForStart();
 
-//        turnRightInDegrees(90);
-//        turnRightInDegrees(90);
-//        turnRightInDegrees(90);
-//        turnRightInDegrees(90);
+
+
+
+//        ElapsedTime timer = new ElapsedTime();
+//        while (opModeIsActive() && timer.milliseconds() < 3000) {
+//            motor.setPower(1);
 //
-//        turnLeftInDegrees(90);
-//        turnLeftInDegrees(90);
-//        turnLeftInDegrees(90);
-//        turnLeftInDegrees(90);
+//        }
+//        motor.setPower(0);
 
-        strafeLeftInMillimeters(500);
-        strafeRightInMillimeters(1000);
-        strafeLeftInMillimeters(500);
-        turnRightInDegrees(360);
-        turnLeftInDegrees(90);
-        turnLeftInDegrees(90);
-        turnLeftInDegrees(90);
-        turnLeftInDegrees(90);
+//        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        motor.setTargetPosition(20000);
+//        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        motor.setPower(.9);
+//        while(opModeIsActive() && motor.isBusy()) {
+//            telemetry.addData("motor position", motor.getCurrentPosition());
+//            telemetry.addData("target position", motor.getTargetPosition());
+//            telemetry.addData("is busy", motor.isBusy());
+//            telemetry.update();
+//        }
+//        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        this.strafeLeftInMillimeters(305);
+        this.strafeRightInMillimeters(305);
+
+        driveForwardsInMillimeters(305);
+        turnRightInDegrees(90);
+        driveForwardsInMillimeters(305);
     }
 }

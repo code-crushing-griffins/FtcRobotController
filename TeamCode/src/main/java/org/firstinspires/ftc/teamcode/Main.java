@@ -79,16 +79,27 @@ public class Main extends Robot {
 //                moveDumper(ActuatorStates.HIGH);
 //            }
 
+            if (gamepad2.dpad_up) {
+                double p = freightDumperServo.getPosition();
+                freightDumperServo.setPosition(p + 0.01);
+            }
+
+            if (gamepad2.dpad_down) {
+                double p = freightDumperServo.getPosition();
+                freightDumperServo.setPosition(p - 0.01);
+            }
+
             if (gamepad2.left_bumper) {
                 duckRotator.setDirection(duckRotator.getDirection().inverted());
             }
 
 
-            beltDriveMotor.setPower(gamepad2.left_stick_y);
+            linearSlideMotor.setPower(gamepad2.left_stick_y);
+            setCRServoPower(gamepad2.right_stick_y);
 
             duckRotator.setPower(gamepad2.left_trigger);
 
-            armDeliveryMotor.setPower(gamepad2.right_stick_y);
+//            armDeliveryMotor.setPower(gamepad2.right_stick_y);
 
         }
 
