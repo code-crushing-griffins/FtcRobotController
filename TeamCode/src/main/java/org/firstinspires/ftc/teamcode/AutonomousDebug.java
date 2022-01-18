@@ -48,33 +48,17 @@ public class AutonomousDebug extends Robot {
         super.runOpMode();
         waitForStart();
 
-
-
-
+        strafeLeftInMillimeters(305);
+//        turnLeftInDegrees(45);
+//        double i = Math.pow(304, 2) * 2;
+//        double d = Math.sqrt(i);
+//        driveForwardsInMillimeters((int) d);
+//        setLinearSlideState(ActuatorStates.HIGH);
+//        turnLeftInDegrees(180);
+//        freightDumperServo.setPosition(0.60);
 //        ElapsedTime timer = new ElapsedTime();
-//        while (opModeIsActive() && timer.milliseconds() < 3000) {
-//            motor.setPower(1);
-//
+//        while(timer.milliseconds() < 2000) {
+//            updateTelemetry();
 //        }
-//        motor.setPower(0);
-
-//        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        motor.setTargetPosition(20000);
-//        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        motor.setPower(.9);
-//        while(opModeIsActive() && motor.isBusy()) {
-//            telemetry.addData("motor position", motor.getCurrentPosition());
-//            telemetry.addData("target position", motor.getTargetPosition());
-//            telemetry.addData("is busy", motor.isBusy());
-//            telemetry.update();
-//        }
-//        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        this.strafeLeftInMillimeters(305);
-        this.strafeRightInMillimeters(305);
-
-        driveForwardsInMillimeters(305);
-        turnRightInDegrees(90);
-        driveForwardsInMillimeters(305);
     }
 }

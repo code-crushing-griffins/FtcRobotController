@@ -50,19 +50,21 @@ public class Main extends Robot {
                 strafeRight(gamepad1.right_trigger);
             }
 
+//            if (gamepad2.right_bumper) {
+//                setLinearSlideState(ActuatorStates.HIGH);
+//            }
+//
+//
 //            if (gamepad2.y) {
-//                moveFreightArmToTarget(ActuatorStates.HIGH);
+//                setLinearSlideState(ActuatorStates.MIDDLE);
 //            }
 //
 //
 //            if (gamepad2.b) {
-//                moveFreightArmToTarget(ActuatorStates.MIDDLE);
+//                setLinearSlideState(ActuatorStates.ZERO);
 //            }
-//
-//
-//            if (gamepad2.a) {
-//                moveFreightArmToTarget(ActuatorStates.ZERO);
-//            }
+
+            dumpToggle(gamepad2.a);
 
             intakeMotorToggle(gamepad2.x);
 
@@ -81,12 +83,12 @@ public class Main extends Robot {
 
             if (gamepad2.dpad_up) {
                 double p = freightDumperServo.getPosition();
-                freightDumperServo.setPosition(p + 0.01);
+                freightDumperServo.setPosition(p - 0.01);
             }
 
             if (gamepad2.dpad_down) {
                 double p = freightDumperServo.getPosition();
-                freightDumperServo.setPosition(p - 0.01);
+                freightDumperServo.setPosition(p + 0.01);
             }
 
             if (gamepad2.left_bumper) {
@@ -94,7 +96,7 @@ public class Main extends Robot {
             }
 
 
-            linearSlideMotor.setPower(gamepad2.left_stick_y);
+            linearSlideMotor.setPower(-gamepad2.left_stick_y);
             setCRServoPower(gamepad2.right_stick_y);
 
             duckRotator.setPower(gamepad2.left_trigger);
