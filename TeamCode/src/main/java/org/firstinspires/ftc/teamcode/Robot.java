@@ -163,9 +163,9 @@ public abstract class Robot extends LinearOpMode {
         if (dumpToggle && button) {
             dumpToggle = false;
             if (freightDumperServo.getPosition() < 0.6) {
-                freightDumperServo.setPosition(0.6);
+                freightDumperServo.setPosition(0.64);
             } else {
-                freightDumperServo.setPosition(0.15);
+                freightDumperServo.setPosition(0.209);
             }
         }
 
@@ -200,12 +200,12 @@ public abstract class Robot extends LinearOpMode {
         }
     }
 
-    void strafeRightInMillimeters(int mm) {
+    public void strafeLeftInMillimeters(int mm) {
         strafeInMillimeters(mm);
 
     }
 
-    void strafeLeftInMillimeters(int mm) {
+    public void strafeRightInMillimeters(int mm) {
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -292,7 +292,7 @@ public abstract class Robot extends LinearOpMode {
         doNothing(250);
     }
 
-    void turnLeftInDegrees(double degrees) {
+    public void turnLeftInDegrees(double degrees) {
         backLeftMotor.setDirection(Direction.FORWARD);
         backRightMotor.setDirection(Direction.FORWARD);
 
@@ -473,7 +473,7 @@ public abstract class Robot extends LinearOpMode {
 //    }
 //
     // basically copy and paste of the linear slide code
-    void setLinearSlideState(ActuatorStates desiredState) {
+    public void setLinearSlideState(ActuatorStates desiredState) {
 
         linearSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
