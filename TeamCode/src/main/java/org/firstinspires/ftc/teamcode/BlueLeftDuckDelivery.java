@@ -24,20 +24,18 @@ public class BlueLeftDuckDelivery extends Robot {
         // 5. turn left 90 degrees
         // 6. dump freight
 
-          driveForwardsInMillimeters(200);
-            strafeRightInMillimeters(610);
-            turnLeftInDegrees(90);
-            strafeRightInMillimeters(610);
-            turnLeftInDegrees(90);
-            setLinearSlideState(ActuatorStates.HIGH);
-            freightDumperServo.setPosition(0.64);
+        driveForwardsInMillimeters(200);
+        strafeRightInMillimeters(610);
+        turnLeftInDegrees(90);
+        strafeRightInMillimeters(610);
+        turnLeftInDegrees(90);
+        setLinearSlideState(ActuatorStates.HIGH);
         ElapsedTime timer = new ElapsedTime();
         while (opModeIsActive() && timer.milliseconds() < 1000) {
             telemetry.update();
         }
 
 //        }
-        }
     }
-
+}
 

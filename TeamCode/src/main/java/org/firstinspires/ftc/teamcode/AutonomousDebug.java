@@ -38,7 +38,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @Autonomous(name="AutonomousDebug")
-@Disabled
 
 public class AutonomousDebug extends Robot {
 
@@ -51,7 +50,7 @@ public class AutonomousDebug extends Robot {
         super.runOpMode();
         waitForStart();
 
-        strafeLeftInMillimeters(305);
+        setLinearSlideState(ActuatorStates.MIDDLE);
 //        turnLeftInDegrees(45);
 //        double i = Math.pow(304, 2) * 2;
 //        double d = Math.sqrt(i);

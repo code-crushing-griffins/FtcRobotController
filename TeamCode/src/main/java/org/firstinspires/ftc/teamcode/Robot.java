@@ -1,13 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoControllerEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public abstract class Robot extends LinearOpMode {
@@ -15,18 +12,20 @@ public abstract class Robot extends LinearOpMode {
     DcMotorEx frontRightMotor; // 1
     DcMotorEx backLeftMotor; // 2
     DcMotorEx backRightMotor; // 3
-    // DcMotorEx armDeliveryMotor;
+    DcMotorEx dumperMotor;
     DcMotor intakeMotor;
     DcMotorEx linearSlideMotor;
     DcMotor duckRotator;
-//    CRServo freightFlipperServo;
-    Servo freightFlipperServo;
-    Servo freightDumperServo;
 
     public enum ActuatorStates {
         ZERO,
         MIDDLE,
         HIGH
+    }
+
+    public enum DumpStates {
+        NO_DUMP,
+        DUMP
     }
 
     private final double DRIVE_TRAIN_COUNTS_PER_MOTOR_REV = 28.0;
@@ -36,8 +35,8 @@ public abstract class Robot extends LinearOpMode {
     private final double DRIVE_TRAIN_COUNTS_PER_WHEEL_REV = DRIVE_TRAIN_COUNTS_PER_MOTOR_REV * DRIVE_TRAIN_GEAR_REDUCTION;
     private final double DRIVE_TRAIN_COUNTS_PER_MM = DRIVE_TRAIN_COUNTS_PER_WHEEL_REV / DRIVE_TRAIN_WHEEL_CIRCUMFERENCE_MM;
 
-//    private ActuatorStates  slideState = ActuatorStates.ZERO;
     private  ActuatorStates slideState = ActuatorStates.ZERO;
+    private DumpStates dumperState = DumpStates.NO_DUMP;
 
     private boolean duckToggle = true;
     private boolean intakeToggle = true;
@@ -50,26 +49,18 @@ public abstract class Robot extends LinearOpMode {
         frontRightMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "frontRightMotor");
         backLeftMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "backLeftMotor");
         backRightMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "backRightMotor");
-        // armDeliveryMotor =  (DcMotorEx) hardwareMap.get(DcMotor.class, "armDeliveryMotor");
+        dumperMotor =  (DcMotorEx) hardwareMap.get(DcMotor.class, "freightDumperMotor");
         intakeMotor =  hardwareMap.get(DcMotor.class, "intakeMotor");
         linearSlideMotor =  (DcMotorEx) hardwareMap.get(DcMotor.class, "linearSlideMotor");
         duckRotator = hardwareMap.get(DcMotor.class, "duckRotatorMotor");
-//        freightFlipperServo = hardwareMap.get(CRServo.class, "freightFlipperServo");
-        freightFlipperServo = hardwareMap.get(Servo.class, "freightFlipperServo");
-        freightDumperServo = hardwareMap.get(Servo.class, "freightDumperServo");
-
-
-
 
         frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backRightMotor.setDirection(DcMotor.Direction.REVERSE);
 
-//        armDeliveryMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        dumperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         linearSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        freightFlipperServo.setPosition(0.0);
 
     }
 
@@ -106,20 +97,6 @@ public abstract class Robot extends LinearOpMode {
         frontRightMotor.setPower(-power);
         backLeftMotor.setPower(-power);
         backRightMotor.setPower(-power);
-    }
-
-    // this will set the power of the continuous rotation servo
-    // that is used to flip the freight off of the side of
-    // our freight loader. The intention is that it is used
-    // to place freight on the shared shipping hub
-    void setCRServoPower(double power) {
-//        freightFlipperServo.setPower(power);
-        if (power == 0) {
-            return;
-        }
-        double sign = power / Math.abs(power);
-        double position = freightFlipperServo.getPosition();
-        freightFlipperServo.setPosition(position + (sign * 0.01));
     }
 
     void stopMotors() {
@@ -159,20 +136,6 @@ public abstract class Robot extends LinearOpMode {
         }
     }
 
-    void dumpToggle(boolean button) {
-        if (dumpToggle && button) {
-            dumpToggle = false;
-            if (freightDumperServo.getPosition() < 0.6) {
-                freightDumperServo.setPosition(0.64);
-            } else {
-                freightDumperServo.setPosition(0.209);
-            }
-        }
-
-        if (!button) {
-            dumpToggle = true;
-        }
-    }
 
     void updateTelemetry() {
         telemetry.addData("frontLeftMotor", this.frontLeftMotor.getPower());
@@ -188,8 +151,7 @@ public abstract class Robot extends LinearOpMode {
         telemetry.addData("frontRightMotor busy", frontLeftMotor.isBusy());
         telemetry.addData("backLeftMotor busy", backLeftMotor.isBusy());
         telemetry.addData("backRightMotor busy", backRightMotor.isBusy());
-        telemetry.addData("freightDumperServo position", freightDumperServo.getPosition());
-        telemetry.addData("flipperServoPosition", freightFlipperServo.getPosition());
+        telemetry.addData("duckRotator power", duckRotator.getPower());
         telemetry.update();
     }
 
@@ -391,88 +353,6 @@ public abstract class Robot extends LinearOpMode {
     }
 
 
-
-//    void moveFreightArmToTarget(ActuatorStates desiredState) {
-//
-//        armDeliveryMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//
-//        int desiredMMToMove = 0;
-//
-//
-//        // There are three possible states that the slide can be in
-//        // There are two possible transitions that can happen in each state
-//        switch (slideState) {
-//            case ZERO:
-//                if (desiredState == ActuatorStates.ZERO) {
-//                    return;
-//                }
-//                if (desiredState == ActuatorStates.MIDDLE) {
-//                    desiredMMToMove = 100;
-//                    this.slideState = ActuatorStates.MIDDLE;
-//                }
-//                if (desiredState == ActuatorStates.HIGH) {
-//                    desiredMMToMove = 225;
-//                    this.slideState = ActuatorStates.HIGH;
-//                }
-//                break;
-//            case MIDDLE:
-//                if (desiredState == ActuatorStates.ZERO) {
-//                    desiredMMToMove = 100;
-//                    armDeliveryMotor.setDirection(Direction.REVERSE);
-//                    this.slideState = ActuatorStates.ZERO;
-//                }
-//                if (desiredState == ActuatorStates.MIDDLE) {
-//                    return;
-//                }
-//                if (desiredState == ActuatorStates.HIGH) {
-//                    desiredMMToMove = 125;
-//                    this.slideState = ActuatorStates.HIGH;
-//                }
-//                break;
-//            case HIGH:
-//                if (desiredState == ActuatorStates.ZERO) {
-//                    desiredMMToMove = 225;
-//                    armDeliveryMotor.setDirection(Direction.REVERSE);
-//                    this.slideState = ActuatorStates.ZERO;
-//                }
-//                if (desiredState == ActuatorStates.MIDDLE) {
-//                    desiredMMToMove = 125;
-//                    armDeliveryMotor.setDirection(Direction.REVERSE);
-//                    this.slideState = ActuatorStates.MIDDLE;
-//                }
-//                if (desiredState == ActuatorStates.HIGH) {
-//                    return;
-//                }
-//                break;
-//            default:
-//                return;
-//        }
-//
-//
-//        final double COUNTS_PER_MOTOR_REV = 4.0;
-//        final double DRIVE_GEAR_REDUCTION = 72.1;
-//        final double WHEEL_CIRCUMFERENCE_MM = 14.4 * Math.PI;
-//
-//        final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
-//        final double COUNTS_PER_MM = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM;
-//
-//
-//        int position = (int) COUNTS_PER_MM * desiredMMToMove;
-//
-//
-//        armDeliveryMotor.setTargetPosition(position);
-//
-//
-//        armDeliveryMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//        armDeliveryMotor.setVelocity(250);
-//
-//        // always set the motor to the default direction so that our
-//        // state transition logic always works as intended
-//        armDeliveryMotor.setDirection(Direction.FORWARD);
-//    }
-//
-    // basically copy and paste of the linear slide code
     public void setLinearSlideState(ActuatorStates desiredState) {
 
         linearSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -532,8 +412,8 @@ public abstract class Robot extends LinearOpMode {
 
 
         final double COUNTS_PER_MOTOR_REV = 4.0;
-        final double DRIVE_GEAR_REDUCTION = 72.1;
-        final double WHEEL_CIRCUMFERENCE_MM = 24 * Math.PI;
+        final double DRIVE_GEAR_REDUCTION = 72.0;
+        final double WHEEL_CIRCUMFERENCE_MM = 48 * Math.PI;
 
         final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
         final double COUNTS_PER_MM = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM;
@@ -557,5 +437,63 @@ public abstract class Robot extends LinearOpMode {
         // always set the motor to the default direction so that our
         // state transition logic always works as intended
         linearSlideMotor.setDirection(Direction.FORWARD);
+    }
+
+
+    public void setDumperState(DumpStates desiredState) {
+
+        dumperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        int desiredMMToMove = 0;
+        // pendingState was added as a lock to prevent concurrency issues when using buttons
+        // this function will most likely just be used for autonomous so
+        // we can likely remove them after testing
+        DumpStates pendingState = DumpStates.NO_DUMP;
+
+        if (desiredState == DumpStates.DUMP) {
+            if(dumperState == DumpStates.NO_DUMP) {
+                desiredMMToMove = 3;
+                pendingState = DumpStates.DUMP;
+            } else {
+                // Already in the state that we want. Return and do nothing
+                return;
+            }
+        }
+
+        if (desiredState == DumpStates.NO_DUMP) {
+            if(dumperState == DumpStates.DUMP) {
+                dumperMotor.setDirection(Direction.REVERSE);
+                desiredMMToMove = 3;
+            } else {
+                // Already in the state that we want. Return and do nothing
+                return;
+            }
+        }
+
+        final double COUNTS_PER_MOTOR_REV = 4.0;
+        final double DRIVE_GEAR_REDUCTION = 72.0; // TODO: is this right?
+        final double WHEEL_CIRCUMFERENCE_MM =  5 * Math.PI;
+
+        final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
+        final double COUNTS_PER_MM = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM;
+
+
+        int position = (int) COUNTS_PER_MM * desiredMMToMove;
+
+        dumperMotor.setTargetPosition(position);
+
+        dumperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        dumperMotor.setVelocity(200);
+        while(opModeIsActive() && dumperMotor.isBusy()) {
+            updateTelemetry();
+        }
+        this.dumperState = pendingState;
+        dumperMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // always set the motor to the default direction so that our
+        // state transition logic always works as intended
+        dumperMotor.setDirection(Direction.FORWARD);
+
     }
 }

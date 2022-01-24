@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Main", group = "Linear Opmode")
+@TeleOp(name = "Maaiiinn", group = "Linear Opmode")
 public class Main extends Robot {
 
     boolean motorToggle = false;
@@ -50,62 +50,29 @@ public class Main extends Robot {
                 strafeRight(gamepad1.right_trigger);
             }
 
-//            if (gamepad2.right_bumper) {
-//                setLinearSlideState(ActuatorStates.HIGH);
-//            }
-//
-//
-//            if (gamepad2.y) {
-//                setLinearSlideState(ActuatorStates.MIDDLE);
-//            }
-//
-//
-//            if (gamepad2.b) {
-//                setLinearSlideState(ActuatorStates.ZERO);
-//            }
-
-            dumpToggle(gamepad2.a);
 
             intakeMotorToggle(gamepad2.x);
 
             setDuckRotator(gamepad2.right_bumper);
 
-
-//            if (gamepad2.dpad_down) {
-//                moveDumper(ActuatorStates.ZERO);
-//            }
-//            if (gamepad2.dpad_right) {
-//                moveDumper(ActuatorStates.MIDDLE);
-//            }
-//            if (gamepad2.dpad_up) {
-//                moveDumper(ActuatorStates.HIGH);
-//            }
-
-            if (gamepad2.dpad_up) {
-                double p = freightDumperServo.getPosition();
-                freightDumperServo.setPosition(p - 0.01);
-            }
-
-            if (gamepad2.dpad_down) {
-                double p = freightDumperServo.getPosition();
-                freightDumperServo.setPosition(p + 0.01);
-            }
-
-            if (gamepad2.left_bumper) {
-                duckRotator.setDirection(duckRotator.getDirection().inverted());
-            }
+            duckRotator.setPower(gamepad2.right_trigger);
 
 
             linearSlideMotor.setPower(-gamepad2.left_stick_y);
-            setCRServoPower(gamepad2.right_stick_y);
 
-            duckRotator.setPower(gamepad2.left_trigger);
 
-//            armDeliveryMotor.setPower(gamepad2.right_stick_y);
+            dumperMotor.setPower(gamepad2.right_stick_y * 0.4);
+
+            if (gamepad2.y) {
+                setDumperState(DumpStates.DUMP);
+            }
+
+            if (gamepad2.b) {
+                setDumperState(DumpStates.NO_DUMP);
+            }
 
         }
 
     }
 }
-
 
