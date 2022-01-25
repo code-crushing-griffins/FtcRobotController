@@ -53,9 +53,13 @@ public class Main extends Robot {
 
             intakeMotorToggle(gamepad2.x);
 
+//            intakeMotorToggleReverse(gamepad2.a);
+
             setDuckRotator(gamepad2.right_bumper);
 
             duckRotator.setPower(gamepad2.right_trigger);
+
+
 
 
             linearSlideMotor.setPower(-gamepad2.left_stick_y);
@@ -63,13 +67,13 @@ public class Main extends Robot {
 
             dumperMotor.setPower(gamepad2.right_stick_y * 0.4);
 
-            if (gamepad2.y) {
-                setDumperState(DumpStates.DUMP);
-            }
-
-            if (gamepad2.b) {
-                setDumperState(DumpStates.NO_DUMP);
-            }
+//            if (gamepad2.y) {
+//                setDumperState(DumpStates.DUMP);
+//            }
+//
+//            if (gamepad2.b) {
+//                setDumperState(DumpStates.NO_DUMP);
+//            }
 
         }
 

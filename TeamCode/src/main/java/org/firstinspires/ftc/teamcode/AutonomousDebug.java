@@ -51,6 +51,15 @@ public class AutonomousDebug extends Robot {
         waitForStart();
 
         setLinearSlideState(ActuatorStates.MIDDLE);
+        ElapsedTime timer = new ElapsedTime();
+        while(timer.milliseconds() < 5000) {
+            updateTelemetry();
+        }
+        setLinearSlideState(ActuatorStates.ZERO);
+        timer.reset();
+        while(timer.milliseconds() < 5000) {
+            updateTelemetry();
+        }
 //        turnLeftInDegrees(45);
 //        double i = Math.pow(304, 2) * 2;
 //        double d = Math.sqrt(i);

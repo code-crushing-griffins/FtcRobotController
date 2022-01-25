@@ -59,7 +59,9 @@ public abstract class Robot extends LinearOpMode {
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backRightMotor.setDirection(DcMotor.Direction.REVERSE);
 
-//        dumperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        duckRotator.setDirection(Direction.REVERSE);
+
+        dumperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         linearSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
@@ -136,6 +138,21 @@ public abstract class Robot extends LinearOpMode {
         }
     }
 
+    void intakeMotorToggleReverse(boolean button) {
+        if (intakeToggle && button) {
+            intakeToggle = false;
+            if (intakeMotor.getPower() == 0) {
+                intakeMotor.setPower(-1);
+            } else {
+                intakeMotor.setPower(0);
+            }
+        }
+
+        if (!button) {
+            intakeToggle = true;
+        }
+    }
+
 
     void updateTelemetry() {
         telemetry.addData("frontLeftMotor", this.frontLeftMotor.getPower());
@@ -152,6 +169,7 @@ public abstract class Robot extends LinearOpMode {
         telemetry.addData("backLeftMotor busy", backLeftMotor.isBusy());
         telemetry.addData("backRightMotor busy", backRightMotor.isBusy());
         telemetry.addData("duckRotator power", duckRotator.getPower());
+        telemetry.addData("dumper power", dumperMotor.getPower());
         telemetry.update();
     }
 
@@ -413,7 +431,7 @@ public abstract class Robot extends LinearOpMode {
 
         final double COUNTS_PER_MOTOR_REV = 4.0;
         final double DRIVE_GEAR_REDUCTION = 72.0;
-        final double WHEEL_CIRCUMFERENCE_MM = 48 * Math.PI;
+        final double WHEEL_CIRCUMFERENCE_MM = 28 * Math.PI;
 
         final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
         final double COUNTS_PER_MM = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM;
