@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
 
-@Autonomous(name="Blue Right Freight + Duck")
-public class BlueRightFreightDelivery extends Robot {
+@Autonomous(name="Blue Right | Freight + Duck + Park")
+public class BlueRightFreightDeliveryDuck extends Robot {
 
 
 
