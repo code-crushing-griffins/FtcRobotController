@@ -15,7 +15,7 @@ public class RedLeftPark extends Robot {
         waitForStart();
 
         driveForwardsInMillimeters(305);
-        turnRightInDegrees(60);
+        turnLeftInDegrees(60);
         driveForwardsInMillimeters(800);
     }
 }
