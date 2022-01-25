@@ -22,6 +22,11 @@ public class BlueRightFreightDelivery extends Robot {
         setLinearSlideState(ActuatorStates.HIGH);
         setDumperState2(DumpStates.DUMP);
         setDumperState2(DumpStates.NO_DUMP);
+        driveForwardsInMillimeters(558);
+        turnLeftInDegrees(45);
+        driveForwardsInMillimeters(700); // 2 feet and some change
+        deliverDuck();
+        strafeLeftInMillimeters(381);
         ElapsedTime timer = new ElapsedTime();
         while (opModeIsActive() && timer.milliseconds() < 1000) {
             telemetry.update();

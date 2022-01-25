@@ -263,10 +263,10 @@ public abstract class Robot extends LinearOpMode {
         setTargetPosition(target);
         setRunToPosition();
 
-        frontLeftMotor.setVelocity(600);
-        frontRightMotor.setVelocity(600);
-        backLeftMotor.setVelocity(600);
-        backRightMotor.setVelocity(600);
+        frontLeftMotor.setVelocity(1000);
+        frontRightMotor.setVelocity(1000);
+        backLeftMotor.setVelocity(1000);
+        backRightMotor.setVelocity(1000);
         while(opModeIsActive() && frontLeftMotor.isBusy()) {
             updateTelemetry();
         }
@@ -297,10 +297,10 @@ public abstract class Robot extends LinearOpMode {
         setTargetPosition(target);
         setRunToPosition();
 
-        frontLeftMotor.setVelocity(1000);
-        frontRightMotor.setVelocity(1000);
-        backLeftMotor.setVelocity(1000);
-        backRightMotor.setVelocity(1000);
+        frontLeftMotor.setVelocity(1100);
+        frontRightMotor.setVelocity(1100);
+        backLeftMotor.setVelocity(1100);
+        backRightMotor.setVelocity(1100);
         while(opModeIsActive() && motorsAreBusy()) {
             updateTelemetry();
         }
@@ -333,13 +333,13 @@ public abstract class Robot extends LinearOpMode {
             updateTelemetry();
         }
 
-        timer.reset();
-        int rotationTime2 = 1000;
-        duckRotator.setPower(1);
-
-        while (opModeIsActive() && timer.milliseconds() <= rotationTime2) {
-            updateTelemetry();
-        }
+//        timer.reset();
+//        int rotationTime2 = 1000;
+//        duckRotator.setPower(1);
+//
+//        while (opModeIsActive() && timer.milliseconds() <= rotationTime2) {
+//            updateTelemetry();
+//        }
 
         duckRotator.setPower(0);
     }
@@ -435,7 +435,7 @@ public abstract class Robot extends LinearOpMode {
 
         linearSlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        linearSlideMotor.setVelocity(100);
+        linearSlideMotor.setVelocity(250);
         while(opModeIsActive() && linearSlideMotor.isBusy()) {
             updateTelemetry();
         }
@@ -557,7 +557,7 @@ public abstract class Robot extends LinearOpMode {
 
         timer.reset();
         // wait until the freight is dumped
-        while(timer.milliseconds() < 3000 && opModeIsActive()) {
+        while(timer.milliseconds() < 1000 && opModeIsActive()) {
             updateTelemetry();
         }
     }
