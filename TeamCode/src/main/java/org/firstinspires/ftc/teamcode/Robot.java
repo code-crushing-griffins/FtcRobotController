@@ -19,6 +19,7 @@ public abstract class Robot extends LinearOpMode {
 
     public enum ActuatorStates {
         ZERO,
+        LOW,
         MIDDLE,
         HIGH
     }
@@ -105,7 +106,7 @@ public abstract class Robot extends LinearOpMode {
         frontLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
         backLeftMotor.setPower(0);
-        backRightMotor.setPower(0);//
+        backRightMotor.setPower(0);
     }
 
     void setDuckRotator(boolean button) {
@@ -170,6 +171,7 @@ public abstract class Robot extends LinearOpMode {
         telemetry.addData("backRightMotor busy", backRightMotor.isBusy());
         telemetry.addData("duckRotator power", duckRotator.getPower());
         telemetry.addData("dumper power", dumperMotor.getPower());
+        telemetry.addData("dumper position", dumperMotor.getCurrentPosition());
         telemetry.update();
     }
 
@@ -291,15 +293,15 @@ public abstract class Robot extends LinearOpMode {
     private void driveStraightInMillimeters(int mm) {
         resetEncoders();
 
-        int target = (int) (DRIVE_TRAIN_COUNTS_PER_WHEEL_REV); // 90 degrees
+        int target = (int) (DRIVE_TRAIN_COUNTS_PER_MM * mm);
         setTargetPosition(target);
         setRunToPosition();
 
-        frontLeftMotor.setVelocity(600);
-        frontRightMotor.setVelocity(600);
-        backLeftMotor.setVelocity(600);
-        backRightMotor.setVelocity(600);
-        while(opModeIsActive() && frontLeftMotor.isBusy()) {
+        frontLeftMotor.setVelocity(1000);
+        frontRightMotor.setVelocity(1000);
+        backLeftMotor.setVelocity(1000);
+        backRightMotor.setVelocity(1000);
+        while(opModeIsActive() && motorsAreBusy()) {
             updateTelemetry();
         }
         resetEncoders();
@@ -313,9 +315,12 @@ public abstract class Robot extends LinearOpMode {
         resetMotorDirection();
     }
 
-
-
-
+    void driveBackwardsInMillimeters(int mm) {
+        frontRightMotor.setDirection(Direction.REVERSE);
+        backLeftMotor.setDirection(Direction.FORWARD);
+        driveStraightInMillimeters(mm);
+        resetMotorDirection();
+    }
 
 
 
@@ -341,42 +346,15 @@ public abstract class Robot extends LinearOpMode {
 
 
 
-
-
-
-
-
-
-    void goStraightInMilliseconds(int ms) {
-        ElapsedTime timer = new ElapsedTime();
-        leftSideGoForwards(1.0);
-        rightSideGoForwards(1.0);
-        while(opModeIsActive() && timer.milliseconds() < ms) {
-            updateTelemetry();
-        }
-        stopMotors();
-    }
-
-    void goBackwardsInMilliseconds(int ms) {
-        ElapsedTime timer = new ElapsedTime();
-        leftSideGoForwards(-1.0);
-        rightSideGoForwards(-
-
-
-                1.0);
-        while(opModeIsActive() && timer.milliseconds() < ms) {
-            updateTelemetry();
-        }
-        stopMotors();
-    }
-
-
     public void setLinearSlideState(ActuatorStates desiredState) {
 
         linearSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         int desiredMMToMove = 0;
+        int position = 0;
         ActuatorStates pendingState = ActuatorStates.ZERO;
+
+        // 39 position units per inch
 
 
         // There are three possible states that the slide can be in
@@ -387,17 +365,24 @@ public abstract class Robot extends LinearOpMode {
                     return;
                 }
                 if (desiredState == ActuatorStates.MIDDLE) {
-                    desiredMMToMove = 200;
+//                    desiredMMToMove = 200;
+                    position = 527;
                     pendingState = ActuatorStates.MIDDLE;
                 }
                 if (desiredState == ActuatorStates.HIGH) {
-                    desiredMMToMove = 400;
+//                    desiredMMToMove = 400;
+                    position = 741;
                     pendingState = ActuatorStates.HIGH;
+                }
+                if (desiredState == ActuatorStates.LOW) {
+                    position = 351;
+                    pendingState = ActuatorStates.LOW;
                 }
                 break;
             case MIDDLE:
                 if (desiredState == ActuatorStates.ZERO) {
-                    desiredMMToMove = 200;
+//                    desiredMMToMove = 200;
+                    position = 527;
                     linearSlideMotor.setDirection(Direction.REVERSE);
                     pendingState = ActuatorStates.ZERO;
                 }
@@ -405,18 +390,21 @@ public abstract class Robot extends LinearOpMode {
                     return;
                 }
                 if (desiredState == ActuatorStates.HIGH) {
-                    desiredMMToMove = 200;
+//                    desiredMMToMove = 200;
+                    position = 214;
                     pendingState = ActuatorStates.HIGH;
                 }
                 break;
             case HIGH:
                 if (desiredState == ActuatorStates.ZERO) {
-                    desiredMMToMove = 400;
+//                    desiredMMToMove = 400;
+                    position = 741;
                     linearSlideMotor.setDirection(Direction.REVERSE);
                     pendingState = ActuatorStates.ZERO;
                 }
                 if (desiredState == ActuatorStates.MIDDLE) {
-                    desiredMMToMove = 200;
+//                    desiredMMToMove = 200;
+                    position = 214;
                     linearSlideMotor.setDirection(Direction.REVERSE);
                     pendingState = ActuatorStates.MIDDLE;
                 }
@@ -429,15 +417,17 @@ public abstract class Robot extends LinearOpMode {
         }
 
 
-        final double COUNTS_PER_MOTOR_REV = 4.0;
-        final double DRIVE_GEAR_REDUCTION = 72.0;
-        final double WHEEL_CIRCUMFERENCE_MM = 28 * Math.PI;
+        // this wasn't working for some reason so we switched to a hard-coded position
+        // in other words, a hard-coded encoder value.
+//        final double COUNTS_PER_MOTOR_REV = 4.0;
+//        final double DRIVE_GEAR_REDUCTION = 72.0;
+//        final double WHEEL_CIRCUMFERENCE_MM = 28 * Math.PI;
+//
+//        final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
+//        final double COUNTS_PER_MM = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM;
 
-        final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
-        final double COUNTS_PER_MM = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM;
 
-
-        int position = (int) COUNTS_PER_MM * desiredMMToMove;
+//        position = (int) Math.round(COUNTS_PER_MM * desiredMMToMove);
 
 
         linearSlideMotor.setTargetPosition(position);
@@ -445,7 +435,7 @@ public abstract class Robot extends LinearOpMode {
 
         linearSlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        linearSlideMotor.setVelocity(200);
+        linearSlideMotor.setVelocity(100);
         while(opModeIsActive() && linearSlideMotor.isBusy()) {
             updateTelemetry();
         }
@@ -458,11 +448,13 @@ public abstract class Robot extends LinearOpMode {
     }
 
 
+    @Deprecated
     public void setDumperState(DumpStates desiredState) {
 
         dumperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        int desiredMMToMove = 0;
+//        int desiredMMToMove = 0;
+
         // pendingState was added as a lock to prevent concurrency issues when using buttons
         // this function will most likely just be used for autonomous so
         // we can likely remove them after testing
@@ -470,7 +462,7 @@ public abstract class Robot extends LinearOpMode {
 
         if (desiredState == DumpStates.DUMP) {
             if(dumperState == DumpStates.NO_DUMP) {
-                desiredMMToMove = 3;
+//                desiredMMToMove = 3;
                 pendingState = DumpStates.DUMP;
             } else {
                 // Already in the state that we want. Return and do nothing
@@ -481,28 +473,33 @@ public abstract class Robot extends LinearOpMode {
         if (desiredState == DumpStates.NO_DUMP) {
             if(dumperState == DumpStates.DUMP) {
                 dumperMotor.setDirection(Direction.REVERSE);
-                desiredMMToMove = 3;
+//                desiredMMToMove = 3;
             } else {
                 // Already in the state that we want. Return and do nothing
                 return;
             }
         }
 
+        // for this, we just want to move the motor output about 1/4 rotation
+        // so there is not really a need to use wheel circumference
         final double COUNTS_PER_MOTOR_REV = 4.0;
-        final double DRIVE_GEAR_REDUCTION = 72.0; // TODO: is this right?
-        final double WHEEL_CIRCUMFERENCE_MM =  5 * Math.PI;
+        final double DRIVE_GEAR_REDUCTION = 72.0;
+//        final double WHEEL_CIRCUMFERENCE_MM =  5 * Math.PI;
 
         final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
-        final double COUNTS_PER_MM = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM;
+//        final double COUNTS_PER_MM = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM;
+        final double COUNTS_PER_QUARTER_TURN = 0.25 * COUNTS_PER_WHEEL_REV;
 
 
-        int position = (int) COUNTS_PER_MM * desiredMMToMove;
+        int position = (int) Math.round(COUNTS_PER_QUARTER_TURN);
+
+        position = 30;
 
         dumperMotor.setTargetPosition(position);
 
         dumperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        dumperMotor.setVelocity(200);
+        dumperMotor.setVelocity(20);
         while(opModeIsActive() && dumperMotor.isBusy()) {
             updateTelemetry();
         }
@@ -512,6 +509,56 @@ public abstract class Robot extends LinearOpMode {
         // always set the motor to the default direction so that our
         // state transition logic always works as intended
         dumperMotor.setDirection(Direction.FORWARD);
+    }
 
+    // refactored to time based because I was not getting encoder values
+    // did not have the tools, time, or spare motors to try and troubleshoot.
+    public void setDumperState2(DumpStates desiredState) {
+
+        // pendingState was added as a lock to prevent concurrency issues when using buttons
+        // this function will most likely just be used for autonomous so
+        // we can likely remove them after testing
+        DumpStates pendingState = DumpStates.NO_DUMP;
+        int waitTime = 0;
+
+        if (desiredState == DumpStates.DUMP) {
+            if(dumperState == DumpStates.NO_DUMP) {
+                waitTime = 300;
+                pendingState = DumpStates.DUMP;
+            } else {
+                // Already in the state that we want. Return and do nothing
+                return;
+            }
+        }
+
+        if (desiredState == DumpStates.NO_DUMP) {
+            if(dumperState == DumpStates.DUMP) {
+                dumperMotor.setDirection(Direction.REVERSE);
+                waitTime = 500;
+            } else {
+                // Already in the state that we want. Return and do nothing
+                return;
+            }
+        }
+
+        ElapsedTime timer = new ElapsedTime();
+
+        dumperMotor.setPower(0.4);
+        while(timer.milliseconds() < waitTime && opModeIsActive()) {
+            updateTelemetry();
+        }
+        dumperMotor.setPower(0);
+        dumperState = pendingState;
+
+        // always set the motor to the default direction so that our
+        // state transition logic always works as intended
+        dumperMotor.setDirection(Direction.FORWARD);
+
+
+        timer.reset();
+        // wait until the freight is dumped
+        while(timer.milliseconds() < 3000 && opModeIsActive()) {
+            updateTelemetry();
+        }
     }
 }
