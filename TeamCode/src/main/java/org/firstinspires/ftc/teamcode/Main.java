@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Maaiiinn", group = "Linear Opmode")
+@TeleOp(name = "Main", group = "Linear Opmode")
 public class Main extends Robot {
 
     boolean motorToggle = false;

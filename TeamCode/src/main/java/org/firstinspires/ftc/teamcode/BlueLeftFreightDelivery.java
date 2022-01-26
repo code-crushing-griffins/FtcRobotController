@@ -16,18 +16,23 @@ public class BlueLeftFreightDelivery extends Robot {
         super.runOpMode();
         waitForStart();
 
+        LinearSlideStates desiredState = detectDuck();
+        // for the middle and bottom positions we need extra space
+        // to deliver the freight
+        int shippingHubBuffer = 0;
+        if (desiredState == LinearSlideStates.MIDDLE) {
+            shippingHubBuffer = 85;
+        }
+        if (desiredState == LinearSlideStates.LOW) {
+            shippingHubBuffer = 120;
+        }
 
         driveForwardsInMillimeters(153);
         turnLeftInDegrees(140);
-        driveBackwardsInMillimeters(558);
-        setLinearSlideState(ActuatorStates.HIGH);
+        driveBackwardsInMillimeters(600 - shippingHubBuffer);
+        setLinearSlideState(desiredState);
         setDumperState2(DumpStates.DUMP);
         setDumperState2(DumpStates.NO_DUMP);
-//        driveForwardsInMillimeters(558);
-//        turnLeftInDegrees(45);
-//        driveForwardsInMillimeters(700); // 2 feet and some change
-//        deliverDuck();
-//        strafeLeftInMillimeters(381);
     }
 }
 

@@ -15,22 +15,28 @@ public class BlueRightFreightDeliveryDuck extends Robot {
     public void runOpMode() {
         super.runOpMode();
         waitForStart();
+        LinearSlideStates desiredState = detectDuck();
+        // for the middle and bottom positions we need extra space
+        // to deliver the freight
+        int shippingHubBuffer = 0;
+        if (desiredState == LinearSlideStates.MIDDLE) {
+            shippingHubBuffer = 90;
+        }
+        if (desiredState == LinearSlideStates.LOW) {
+            shippingHubBuffer = 120;
+        }
 
         driveForwardsInMillimeters(153);
-        turnRightInDegrees(140);
-        driveBackwardsInMillimeters(558);
-        setLinearSlideState(ActuatorStates.HIGH);
+        turnRightInDegrees(145);
+        driveBackwardsInMillimeters(558 - shippingHubBuffer);
+        setLinearSlideState(desiredState);
         setDumperState2(DumpStates.DUMP);
         setDumperState2(DumpStates.NO_DUMP);
         driveForwardsInMillimeters(558);
         turnLeftInDegrees(45);
         driveForwardsInMillimeters(700); // 2 feet and some change
         deliverDuck();
-        strafeLeftInMillimeters(381);
-        ElapsedTime timer = new ElapsedTime();
-        while (opModeIsActive() && timer.milliseconds() < 1000) {
-            telemetry.update();
-        }
+        strafeLeftInMillimeters(450);
 
     }
 }

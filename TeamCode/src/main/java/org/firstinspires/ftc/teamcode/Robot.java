@@ -17,7 +17,7 @@ public abstract class Robot extends LinearOpMode {
     DcMotorEx linearSlideMotor;
     DcMotor duckRotator;
 
-    public enum ActuatorStates {
+    public enum LinearSlideStates {
         ZERO,
         LOW,
         MIDDLE,
@@ -36,12 +36,14 @@ public abstract class Robot extends LinearOpMode {
     private final double DRIVE_TRAIN_COUNTS_PER_WHEEL_REV = DRIVE_TRAIN_COUNTS_PER_MOTOR_REV * DRIVE_TRAIN_GEAR_REDUCTION;
     private final double DRIVE_TRAIN_COUNTS_PER_MM = DRIVE_TRAIN_COUNTS_PER_WHEEL_REV / DRIVE_TRAIN_WHEEL_CIRCUMFERENCE_MM;
 
-    private  ActuatorStates slideState = ActuatorStates.ZERO;
+    private  LinearSlideStates slideState = LinearSlideStates.ZERO;
     private DumpStates dumperState = DumpStates.NO_DUMP;
 
     private boolean duckToggle = true;
     private boolean intakeToggle = true;
     private boolean dumpToggle = true;
+
+    private DuckDetector duckDetector;
 
 
     @Override
@@ -65,8 +67,13 @@ public abstract class Robot extends LinearOpMode {
         dumperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         linearSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        this.duckDetector = new DuckDetector(this);
+
     }
 
+    public LinearSlideStates detectDuck() {
+        return this.duckDetector.detect();
+    }
 
     void leftSideGoForwards(double power) {
         frontLeftMotor.setPower(-power);
@@ -239,15 +246,15 @@ public abstract class Robot extends LinearOpMode {
 
         setRunToPosition();
 
-        frontLeftMotor.setVelocity(1000);
-        frontRightMotor.setVelocity(1000);
-        backLeftMotor.setVelocity(1000);
-        backRightMotor.setVelocity(1000);
+        frontLeftMotor.setVelocity(1250);
+        frontRightMotor.setVelocity(1250);
+        backLeftMotor.setVelocity(1250);
+        backRightMotor.setVelocity(1250);
 
         while(opModeIsActive() && motorsAreBusy()) {
             updateTelemetry();
         }
-        doNothing(250);
+        doNothing(100);
         resetEncoders();
     }
 
@@ -263,15 +270,15 @@ public abstract class Robot extends LinearOpMode {
         setTargetPosition(target);
         setRunToPosition();
 
-        frontLeftMotor.setVelocity(1000);
-        frontRightMotor.setVelocity(1000);
-        backLeftMotor.setVelocity(1000);
-        backRightMotor.setVelocity(1000);
+        frontLeftMotor.setVelocity(1250);
+        frontRightMotor.setVelocity(1250);
+        backLeftMotor.setVelocity(1250);
+        backRightMotor.setVelocity(1250);
         while(opModeIsActive() && frontLeftMotor.isBusy()) {
             updateTelemetry();
         }
         resetEncoders();
-        doNothing(250);
+        doNothing(100);
     }
 
     public void turnLeftInDegrees(double degrees) {
@@ -297,15 +304,15 @@ public abstract class Robot extends LinearOpMode {
         setTargetPosition(target);
         setRunToPosition();
 
-        frontLeftMotor.setVelocity(1100);
-        frontRightMotor.setVelocity(1100);
-        backLeftMotor.setVelocity(1100);
-        backRightMotor.setVelocity(1100);
+        frontLeftMotor.setVelocity(1250);
+        frontRightMotor.setVelocity(1250);
+        backLeftMotor.setVelocity(1250);
+        backRightMotor.setVelocity(1250);
         while(opModeIsActive() && motorsAreBusy()) {
             updateTelemetry();
         }
         resetEncoders();
-        doNothing(250);
+        doNothing(100);
     }
 
     public void driveForwardsInMillimeters(int mm) {
@@ -346,69 +353,71 @@ public abstract class Robot extends LinearOpMode {
 
 
 
-    public void setLinearSlideState(ActuatorStates desiredState) {
+    // TODO: complete the state machine
+    public void setLinearSlideState(LinearSlideStates desiredState) {
 
         linearSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         int desiredMMToMove = 0;
         int position = 0;
-        ActuatorStates pendingState = ActuatorStates.ZERO;
+        LinearSlideStates pendingState = LinearSlideStates.ZERO;
 
         // 39 position units per inch
+        // set the position variable to (39 x the number of inches to travel)
 
 
         // There are three possible states that the slide can be in
         // There are two possible transitions that can happen in each state
         switch (slideState) {
             case ZERO:
-                if (desiredState == ActuatorStates.ZERO) {
+                if (desiredState == LinearSlideStates.ZERO) {
                     return;
                 }
-                if (desiredState == ActuatorStates.MIDDLE) {
+                if (desiredState == LinearSlideStates.MIDDLE) {
 //                    desiredMMToMove = 200;
                     position = 527;
-                    pendingState = ActuatorStates.MIDDLE;
+                    pendingState = LinearSlideStates.MIDDLE;
                 }
-                if (desiredState == ActuatorStates.HIGH) {
+                if (desiredState == LinearSlideStates.HIGH) {
 //                    desiredMMToMove = 400;
                     position = 741;
-                    pendingState = ActuatorStates.HIGH;
+                    pendingState = LinearSlideStates.HIGH;
                 }
-                if (desiredState == ActuatorStates.LOW) {
+                if (desiredState == LinearSlideStates.LOW) {
                     position = 351;
-                    pendingState = ActuatorStates.LOW;
+                    pendingState = LinearSlideStates.LOW;
                 }
                 break;
             case MIDDLE:
-                if (desiredState == ActuatorStates.ZERO) {
+                if (desiredState == LinearSlideStates.ZERO) {
 //                    desiredMMToMove = 200;
                     position = 527;
                     linearSlideMotor.setDirection(Direction.REVERSE);
-                    pendingState = ActuatorStates.ZERO;
+                    pendingState = LinearSlideStates.ZERO;
                 }
-                if (desiredState == ActuatorStates.MIDDLE) {
+                if (desiredState == LinearSlideStates.MIDDLE) {
                     return;
                 }
-                if (desiredState == ActuatorStates.HIGH) {
+                if (desiredState == LinearSlideStates.HIGH) {
 //                    desiredMMToMove = 200;
                     position = 214;
-                    pendingState = ActuatorStates.HIGH;
+                    pendingState = LinearSlideStates.HIGH;
                 }
                 break;
             case HIGH:
-                if (desiredState == ActuatorStates.ZERO) {
+                if (desiredState == LinearSlideStates.ZERO) {
 //                    desiredMMToMove = 400;
                     position = 741;
                     linearSlideMotor.setDirection(Direction.REVERSE);
-                    pendingState = ActuatorStates.ZERO;
+                    pendingState = LinearSlideStates.ZERO;
                 }
-                if (desiredState == ActuatorStates.MIDDLE) {
+                if (desiredState == LinearSlideStates.MIDDLE) {
 //                    desiredMMToMove = 200;
                     position = 214;
                     linearSlideMotor.setDirection(Direction.REVERSE);
-                    pendingState = ActuatorStates.MIDDLE;
+                    pendingState = LinearSlideStates.MIDDLE;
                 }
-                if (desiredState == ActuatorStates.HIGH) {
+                if (desiredState == LinearSlideStates.HIGH) {
                     return;
                 }
                 break;
@@ -435,7 +444,10 @@ public abstract class Robot extends LinearOpMode {
 
         linearSlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        linearSlideMotor.setVelocity(250);
+        linearSlideMotor.setVelocity(350);
+
+        // uncomment this loop to block other autonomous operations
+        // while the linear slide is moving
         while(opModeIsActive() && linearSlideMotor.isBusy()) {
             updateTelemetry();
         }

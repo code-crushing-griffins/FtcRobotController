@@ -20,7 +20,7 @@ public class RedRightFreightDelivery extends Robot {
         driveForwardsInMillimeters(153);
         turnRightInDegrees(140);
         driveBackwardsInMillimeters(558);
-        setLinearSlideState(ActuatorStates.HIGH);
+        setLinearSlideState(LinearSlideStates.HIGH);
         setDumperState2(DumpStates.DUMP);
         setDumperState2(DumpStates.NO_DUMP);
     }
