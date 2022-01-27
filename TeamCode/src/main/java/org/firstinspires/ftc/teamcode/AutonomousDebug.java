@@ -50,29 +50,6 @@ public class AutonomousDebug extends Robot {
         super.runOpMode();
         waitForStart();
 
-//        setLinearSlideState(LinearSlideStates.MIDDLE);
-//        setLinearSlideState(LinearSlideStates.ZERO);
-//        timer.reset();
-//        while(timer.milliseconds() < 5000) {
-//            updateTelemetry();
-//        }
-
-//        setDumperState(DumpStates.DUMP);
-//        setLinearSlideState(LinearSlideStates.HIGH);
-//        setDumperState2(DumpStates.DUMP);
-//        setDumperState2(DumpStates.NO_DUMP);
-        setLinearSlideState(LinearSlideStates.HIGH);
-
-//        turnLeftInDegrees(45);
-//        double i = Math.pow(304, 2) * 2;
-//        double d = Math.sqrt(i);
-//        driveForwardsInMillimeters((int) d);
-//        setLinearSlideState(LinearSlideStates.HIGH);
-//        turnLeftInDegrees(180);
-//        freightDumperServo.setPosition(0.60);
-//        ElapsedTime timer = new ElapsedTime();
-//        while(timer.milliseconds() < 2000) {
-//            updateTelemetry();
-//        }
+        setDumperState(DumpStates.DUMP);
     }
 }

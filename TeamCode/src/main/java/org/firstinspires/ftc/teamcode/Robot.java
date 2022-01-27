@@ -465,7 +465,7 @@ public abstract class Robot extends LinearOpMode {
 
         dumperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-//        int desiredMMToMove = 0;
+        int position = 0;
 
         // pendingState was added as a lock to prevent concurrency issues when using buttons
         // this function will most likely just be used for autonomous so
@@ -474,7 +474,6 @@ public abstract class Robot extends LinearOpMode {
 
         if (desiredState == DumpStates.DUMP) {
             if(dumperState == DumpStates.NO_DUMP) {
-//                desiredMMToMove = 3;
                 pendingState = DumpStates.DUMP;
             } else {
                 // Already in the state that we want. Return and do nothing
@@ -492,20 +491,7 @@ public abstract class Robot extends LinearOpMode {
             }
         }
 
-        // for this, we just want to move the motor output about 1/4 rotation
-        // so there is not really a need to use wheel circumference
-        final double COUNTS_PER_MOTOR_REV = 4.0;
-        final double DRIVE_GEAR_REDUCTION = 72.0;
-//        final double WHEEL_CIRCUMFERENCE_MM =  5 * Math.PI;
-
-        final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
-//        final double COUNTS_PER_MM = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM;
-        final double COUNTS_PER_QUARTER_TURN = 0.25 * COUNTS_PER_WHEEL_REV;
-
-
-        int position = (int) Math.round(COUNTS_PER_QUARTER_TURN);
-
-        position = 30;
+        position = 200;
 
         dumperMotor.setTargetPosition(position);
 
@@ -535,7 +521,7 @@ public abstract class Robot extends LinearOpMode {
 
         if (desiredState == DumpStates.DUMP) {
             if(dumperState == DumpStates.NO_DUMP) {
-                waitTime = 300;
+                waitTime = 250;
                 pendingState = DumpStates.DUMP;
             } else {
                 // Already in the state that we want. Return and do nothing
@@ -546,7 +532,7 @@ public abstract class Robot extends LinearOpMode {
         if (desiredState == DumpStates.NO_DUMP) {
             if(dumperState == DumpStates.DUMP) {
                 dumperMotor.setDirection(Direction.REVERSE);
-                waitTime = 500;
+                waitTime = 400;
             } else {
                 // Already in the state that we want. Return and do nothing
                 return;

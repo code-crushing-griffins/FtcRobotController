@@ -21,14 +21,14 @@ public class BlueLeftFreightDelivery extends Robot {
         // to deliver the freight
         int shippingHubBuffer = 0;
         if (desiredState == LinearSlideStates.MIDDLE) {
-            shippingHubBuffer = 85;
+            shippingHubBuffer = 72;
         }
         if (desiredState == LinearSlideStates.LOW) {
-            shippingHubBuffer = 120;
+            shippingHubBuffer = 1;
         }
 
         driveForwardsInMillimeters(153);
-        turnLeftInDegrees(140);
+        turnLeftInDegrees(145);
         driveBackwardsInMillimeters(600 - shippingHubBuffer);
         setLinearSlideState(desiredState);
         setDumperState2(DumpStates.DUMP);
