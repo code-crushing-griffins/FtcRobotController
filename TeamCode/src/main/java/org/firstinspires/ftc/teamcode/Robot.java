@@ -472,9 +472,12 @@ public abstract class Robot extends LinearOpMode {
         // we can likely remove them after testing
         DumpStates pendingState = DumpStates.NO_DUMP;
 
+        int waitTime = 0;
+
         if (desiredState == DumpStates.DUMP) {
             if(dumperState == DumpStates.NO_DUMP) {
                 pendingState = DumpStates.DUMP;
+                waitTime = 250;
             } else {
                 // Already in the state that we want. Return and do nothing
                 return;
@@ -484,20 +487,22 @@ public abstract class Robot extends LinearOpMode {
         if (desiredState == DumpStates.NO_DUMP) {
             if(dumperState == DumpStates.DUMP) {
                 dumperMotor.setDirection(Direction.REVERSE);
-//                desiredMMToMove = 3;
+                pendingState = DumpStates.NO_DUMP;
+                waitTime = 400;
             } else {
                 // Already in the state that we want. Return and do nothing
                 return;
             }
         }
 
-        position = 200;
+        position = 80; // this value changes how far the dumper moves
 
         dumperMotor.setTargetPosition(position);
 
         dumperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        dumperMotor.setVelocity(20);
+        dumperMotor.setVelocity(200);
+
         while(opModeIsActive() && dumperMotor.isBusy()) {
             updateTelemetry();
         }
@@ -507,6 +512,8 @@ public abstract class Robot extends LinearOpMode {
         // always set the motor to the default direction so that our
         // state transition logic always works as intended
         dumperMotor.setDirection(Direction.FORWARD);
+
+        doNothing(waitTime);
     }
 
     // refactored to time based because I was not getting encoder values
