@@ -67,11 +67,12 @@ public abstract class Robot extends LinearOpMode {
         dumperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         linearSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        this.duckDetector = new DuckDetector(this);
-
     }
 
     public LinearSlideStates detectDuck() {
+        if (this.duckDetector == null) {
+            this.duckDetector = new DuckDetector(this);
+        }
         return this.duckDetector.detect();
     }
 
@@ -353,12 +354,11 @@ public abstract class Robot extends LinearOpMode {
 
 
 
-    // TODO: complete the state machine
+    // TODO: complete the state machine. Not all transitions accounted for.
     public void setLinearSlideState(LinearSlideStates desiredState) {
 
         linearSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        int desiredMMToMove = 0;
         int position = 0;
         LinearSlideStates pendingState = LinearSlideStates.ZERO;
 
@@ -426,21 +426,7 @@ public abstract class Robot extends LinearOpMode {
         }
 
 
-        // this wasn't working for some reason so we switched to a hard-coded position
-        // in other words, a hard-coded encoder value.
-//        final double COUNTS_PER_MOTOR_REV = 4.0;
-//        final double DRIVE_GEAR_REDUCTION = 72.0;
-//        final double WHEEL_CIRCUMFERENCE_MM = 28 * Math.PI;
-//
-//        final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
-//        final double COUNTS_PER_MM = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM;
-
-
-//        position = (int) Math.round(COUNTS_PER_MM * desiredMMToMove);
-
-
         linearSlideMotor.setTargetPosition(position);
-
 
         linearSlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -459,13 +445,9 @@ public abstract class Robot extends LinearOpMode {
         linearSlideMotor.setDirection(Direction.FORWARD);
     }
 
-
-    @Deprecated
     public void setDumperState(DumpStates desiredState) {
 
         dumperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        int position = 0;
 
         // pendingState was added as a lock to prevent concurrency issues when using buttons
         // this function will most likely just be used for autonomous so
@@ -477,7 +459,7 @@ public abstract class Robot extends LinearOpMode {
         if (desiredState == DumpStates.DUMP) {
             if(dumperState == DumpStates.NO_DUMP) {
                 pendingState = DumpStates.DUMP;
-                waitTime = 250;
+                waitTime = 1000; // wait a full second for the freight to fall out
             } else {
                 // Already in the state that we want. Return and do nothing
                 return;
@@ -488,24 +470,25 @@ public abstract class Robot extends LinearOpMode {
             if(dumperState == DumpStates.DUMP) {
                 dumperMotor.setDirection(Direction.REVERSE);
                 pendingState = DumpStates.NO_DUMP;
-                waitTime = 400;
+                waitTime = 250; // wait 1/4 second for the dumper to move away from shipping hub before moving
             } else {
                 // Already in the state that we want. Return and do nothing
                 return;
             }
         }
 
-        position = 80; // this value changes how far the dumper moves
+        int position = 65; // this value changes how far the dumper moves
 
         dumperMotor.setTargetPosition(position);
 
         dumperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        dumperMotor.setVelocity(200);
+        dumperMotor.setPower(0.2);
 
         while(opModeIsActive() && dumperMotor.isBusy()) {
             updateTelemetry();
         }
+        dumperMotor.setPower(0);
         this.dumperState = pendingState;
         dumperMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -518,6 +501,7 @@ public abstract class Robot extends LinearOpMode {
 
     // refactored to time based because I was not getting encoder values
     // did not have the tools, time, or spare motors to try and troubleshoot.
+    @Deprecated
     public void setDumperState2(DumpStates desiredState) {
 
         // pendingState was added as a lock to prevent concurrency issues when using buttons
