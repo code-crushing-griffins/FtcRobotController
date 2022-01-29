@@ -76,6 +76,14 @@ public abstract class Robot extends LinearOpMode {
         return this.duckDetector.detect();
     }
 
+    // use this if you want to save time
+    // this can be called before waitForStart(). It takes a few seconds.
+    public void initializeDuckDetector() {
+        if (this.duckDetector == null) {
+            this.duckDetector = new DuckDetector(this);
+        }
+    }
+
     void leftSideGoForwards(double power) {
         frontLeftMotor.setPower(-power);
         backLeftMotor.setPower(power);
@@ -247,10 +255,10 @@ public abstract class Robot extends LinearOpMode {
 
         setRunToPosition();
 
-        frontLeftMotor.setVelocity(1250);
-        frontRightMotor.setVelocity(1250);
-        backLeftMotor.setVelocity(1250);
-        backRightMotor.setVelocity(1250);
+        frontLeftMotor.setVelocity(1000);
+        frontRightMotor.setVelocity(1000);
+        backLeftMotor.setVelocity(1000);
+        backRightMotor.setVelocity(1000);
 
         while(opModeIsActive() && motorsAreBusy()) {
             updateTelemetry();
@@ -271,10 +279,10 @@ public abstract class Robot extends LinearOpMode {
         setTargetPosition(target);
         setRunToPosition();
 
-        frontLeftMotor.setVelocity(1250);
-        frontRightMotor.setVelocity(1250);
-        backLeftMotor.setVelocity(1250);
-        backRightMotor.setVelocity(1250);
+        frontLeftMotor.setVelocity(1000);
+        frontRightMotor.setVelocity(1000);
+        backLeftMotor.setVelocity(1000);
+        backRightMotor.setVelocity(1000);
         while(opModeIsActive() && frontLeftMotor.isBusy()) {
             updateTelemetry();
         }
@@ -305,10 +313,10 @@ public abstract class Robot extends LinearOpMode {
         setTargetPosition(target);
         setRunToPosition();
 
-        frontLeftMotor.setVelocity(1250);
-        frontRightMotor.setVelocity(1250);
-        backLeftMotor.setVelocity(1250);
-        backRightMotor.setVelocity(1250);
+        frontLeftMotor.setVelocity(1000);
+        frontRightMotor.setVelocity(1000);
+        backLeftMotor.setVelocity(1000);
+        backRightMotor.setVelocity(1000);
         while(opModeIsActive() && motorsAreBusy()) {
             updateTelemetry();
         }
@@ -334,7 +342,7 @@ public abstract class Robot extends LinearOpMode {
 
     void deliverDuck() {
         ElapsedTime timer = new ElapsedTime();
-        int initialRotationTime = 3000;
+        int initialRotationTime = 3200;
         duckRotator.setPower(.5);
 
         while (opModeIsActive() && timer.milliseconds() <= initialRotationTime) {
@@ -355,6 +363,10 @@ public abstract class Robot extends LinearOpMode {
 
 
     // TODO: complete the state machine. Not all transitions accounted for.
+    // Moves the linear slide asynchronously. This method will not prevent
+    // other operations from going on at the same time. This needs to be
+    // considered carefully. It effectively will depend on other operations to block
+    // for it. Otherwise op-modes will need to keep track of the state of concurrent operations.
     public void setLinearSlideState(LinearSlideStates desiredState) {
 
         linearSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -432,17 +444,19 @@ public abstract class Robot extends LinearOpMode {
 
         linearSlideMotor.setVelocity(350);
 
-        // uncomment this loop to block other autonomous operations
-        // while the linear slide is moving
+        // starting a new thread so that this operation does not block
+        // any other robot movement. In other words, the robot can raise
+        // the linear slide and move around at the same time.
+        final LinearSlideStates finalPendingState = pendingState;
+
         while(opModeIsActive() && linearSlideMotor.isBusy()) {
             updateTelemetry();
         }
-        this.slideState = pendingState;
-        linearSlideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
         // always set the motor to the default direction so that our
         // state transition logic always works as intended
         linearSlideMotor.setDirection(Direction.FORWARD);
+        slideState = finalPendingState;
+        linearSlideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void setDumperState(DumpStates desiredState) {
@@ -453,13 +467,14 @@ public abstract class Robot extends LinearOpMode {
         // this function will most likely just be used for autonomous so
         // we can likely remove them after testing
         DumpStates pendingState = DumpStates.NO_DUMP;
-
-        int waitTime = 0;
+        int position = 0; // this value changes how far the dumper moves
+        int waitTime = 0; // how long to block (wait) after changing states
 
         if (desiredState == DumpStates.DUMP) {
             if(dumperState == DumpStates.NO_DUMP) {
                 pendingState = DumpStates.DUMP;
                 waitTime = 1000; // wait a full second for the freight to fall out
+                position = 60;
             } else {
                 // Already in the state that we want. Return and do nothing
                 return;
@@ -471,13 +486,12 @@ public abstract class Robot extends LinearOpMode {
                 dumperMotor.setDirection(Direction.REVERSE);
                 pendingState = DumpStates.NO_DUMP;
                 waitTime = 250; // wait 1/4 second for the dumper to move away from shipping hub before moving
+                position = 75;
             } else {
                 // Already in the state that we want. Return and do nothing
                 return;
             }
         }
-
-        int position = 65; // this value changes how far the dumper moves
 
         dumperMotor.setTargetPosition(position);
 

@@ -50,7 +50,12 @@ public class AutonomousDebug extends Robot {
         super.runOpMode();
         waitForStart();
 
-//        setLinearSlideState(LinearSlideStates.HIGH);
+        new Thread() {
+            public void run() {
+                setLinearSlideState(LinearSlideStates.MIDDLE);
+            }
+        }.start();
+        deliverDuck();
         setDumperState(DumpStates.DUMP);
         setDumperState(DumpStates.NO_DUMP);
     }
