@@ -83,6 +83,7 @@ public class DuckDetector {
             // (typically 16/9).
             tfod.setZoom(1, 16.0/9.0);
         }
+
     }
 
     public Robot.LinearSlideStates detect() {
@@ -106,10 +107,13 @@ public class DuckDetector {
 //                                recognition.getRight(), recognition.getBottom());
                         if (recognition.getLabel().equals("Duck")) {
                             if (recognition.getLeft() > 800) {
-                                return Robot.LinearSlideStates.LOW;
+                                return Robot.LinearSlideStates.HIGH;
                             }
                             if (recognition.getLeft() < 800 && recognition.getLeft() > 300) {
                                 return Robot.LinearSlideStates.MIDDLE;
+                            }
+                            if (recognition.getLeft() < 300) {
+                                return Robot.LinearSlideStates.LOW;
                             }
                         }
                         i++;

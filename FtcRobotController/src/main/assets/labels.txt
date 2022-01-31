@@ -1,0 +1,3 @@
+0 HOOD
+1 NO HOOD
+2 No Glasses
