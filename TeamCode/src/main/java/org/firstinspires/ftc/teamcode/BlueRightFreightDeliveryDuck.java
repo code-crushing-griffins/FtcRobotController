@@ -21,12 +21,21 @@ public class BlueRightFreightDeliveryDuck extends Robot {
         // for the middle and bottom positions we need extra space
         // to deliver the freight duh? like bruh can you understand stuff?
         int shippingHubBuffer = 0;
+
+        int duckBuffer = 0;
+
         if (desiredState == LinearSlideStates.MIDDLE) {
             shippingHubBuffer = 68;
+            duckBuffer = 35;
         }
         if (desiredState == LinearSlideStates.LOW) {
-            shippingHubBuffer = 100;
+            shippingHubBuffer = 138;
+            duckBuffer = 65;
         }
+
+
+
+
 
         new Thread() {
             @Override
@@ -41,8 +50,8 @@ public class BlueRightFreightDeliveryDuck extends Robot {
         setDumperState(DumpStates.DUMP);
         setDumperState(DumpStates.NO_DUMP);
         driveForwardsInMillimeters(558);
-        turnLeftInDegrees(50);
-        driveForwardsInMillimeters(700); // 2 feet and some change
+        turnLeftInDegrees(55);
+        driveForwardsInMillimeters(700 - duckBuffer); // drives towards the duck
         deliverDuck();
         strafeLeftInMillimeters(500);
 

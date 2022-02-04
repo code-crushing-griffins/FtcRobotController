@@ -106,14 +106,11 @@ public class DuckDetector {
 //                        robot.telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
 //                                recognition.getRight(), recognition.getBottom());
                         if (recognition.getLabel().equals("Duck")) {
-                            if (recognition.getLeft() > 800) {
-                                return Robot.LinearSlideStates.HIGH;
-                            }
-                            if (recognition.getLeft() < 800 && recognition.getLeft() > 300) {
+                            if (recognition.getLeft() > 300) {
                                 return Robot.LinearSlideStates.MIDDLE;
                             }
-                            if (recognition.getLeft() < 300) {
-                                return Robot.LinearSlideStates.LOW;
+                            if (recognition.getLeft() <= 300) {
+                                return Robot.LinearSlideStates.LOW;// one more time on more time
                             }
                         }
                         i++;
