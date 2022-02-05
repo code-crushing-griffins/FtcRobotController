@@ -37,12 +37,12 @@ public class RedLeftFreightDeliveryDuck extends Robot {
         }.start();
 
         driveForwardsInMillimeters(153);
-        turnLeftInDegrees(150);
-        driveBackwardsInMillimeters(575 - shippingHubBuffer);
+        turnLeftInDegrees(140);
+        driveBackwardsInMillimeters(760 - shippingHubBuffer);
         setDumperState(DumpStates.DUMP);
         setDumperState(DumpStates.NO_DUMP);
-        turnLeftInDegrees(70);
-        strafeRightInMillimeters(845 - carouselBuffer);
+        turnLeftInDegrees(80);
+        strafeRightInMillimeters(830 - carouselBuffer);
         deliverDuck();
         turnLeftInDegrees(65);
         strafeLeftInMillimeters(475);
