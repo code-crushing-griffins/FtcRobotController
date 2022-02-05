@@ -86,7 +86,7 @@ public class DuckDetector {
     public Robot.LinearSlideStates detect() {
         ElapsedTime timer = new ElapsedTime();
         // only a brief time allowed for duck finding
-        while (robot.opModeIsActive() && timer.milliseconds() < 3000) {
+        while (robot.opModeIsActive() && timer.milliseconds() < 2500) {
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.

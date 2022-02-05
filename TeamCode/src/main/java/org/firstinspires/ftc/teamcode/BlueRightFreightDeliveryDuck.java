@@ -19,18 +19,14 @@ public class BlueRightFreightDeliveryDuck extends Robot {
 
         LinearSlideStates desiredState = detectDuck();
         // for the middle and bottom positions we need extra space
-        // to deliver the freight duh? like bruh can you understand stuff?
         int shippingHubBuffer = 0;
 
-        int duckBuffer = 0;
 
         if (desiredState == LinearSlideStates.MIDDLE) {
             shippingHubBuffer = 68;
-            duckBuffer = 35;
         }
         if (desiredState == LinearSlideStates.LOW) {
             shippingHubBuffer = 138;
-            duckBuffer = 65;
         }
 
 
@@ -45,15 +41,42 @@ public class BlueRightFreightDeliveryDuck extends Robot {
         }.start();
 
         driveForwardsInMillimeters(153);
-        turnRightInDegrees(150);
-        driveBackwardsInMillimeters(558 - shippingHubBuffer);
+        turnRightInDegrees(155);
+        driveBackwardsInMillimeters(660 - shippingHubBuffer);
         setDumperState(DumpStates.DUMP);
         setDumperState(DumpStates.NO_DUMP);
-        driveForwardsInMillimeters(558);
-        turnLeftInDegrees(55);
-        driveForwardsInMillimeters(700 - duckBuffer); // drives towards the duck
+
+
+
+        if (desiredState == LinearSlideStates.HIGH) {
+            driveForwardsInMillimeters(50);
+        }
+        if (desiredState == LinearSlideStates.MIDDLE) {
+            driveBackwardsInMillimeters(18);
+        }
+        if (desiredState == LinearSlideStates.LOW) {
+            driveBackwardsInMillimeters(88);
+        }
+
+        turnLeftInDegrees(125);
+        strafeRightInMillimeters(890); // drives towards the duck
         deliverDuck();
-        strafeLeftInMillimeters(500);
+        turnRightInDegrees(75);
+        strafeLeftInMillimeters(550);
+
+//        turnLeftInDegrees(70);
+//        strafeRightInMillimeters(845 - carouselBuffer);
+//        deliverDuck();
+//        turnLeftInDegrees(65);
+//        strafeLeftInMillimeters(475);
+
+
+
+//        driveForwardsInMillimeters(558);
+//        turnLeftInDegrees(50);
+//        driveForwardsInMillimeters(700 - duckBuffer); // drives towards the duck
+//        deliverDuck();
+//        strafeLeftInMillimeters(450);
 
     }
 }
