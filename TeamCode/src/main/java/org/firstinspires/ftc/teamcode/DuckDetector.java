@@ -23,12 +23,9 @@ public class DuckDetector {
      *  FreightFrenzy_BC.tflite  0: Ball,  1: Cube
      *  FreightFrenzy_DM.tflite  0: Duck,  1: Marker
      */
-    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
+    private static final String TFOD_MODEL_ASSET = "SoloCup.tflite";
     private static final String[] LABELS = {
-            "Ball",
-            "Cube",
-            "Duck",
-            "Marker"
+            "SoloCup"
     };
 
     /*
@@ -105,7 +102,7 @@ public class DuckDetector {
 //                                recognition.getLeft(), recognition.getTop());
 //                        robot.telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
 //                                recognition.getRight(), recognition.getBottom());
-                        if (recognition.getLabel().equals("Duck")) {
+                        if (recognition.getLabel().equals("SoloCup")) {
                             if (recognition.getLeft() > 300) {
                                 return Robot.LinearSlideStates.MIDDLE;
                             }
@@ -149,6 +146,7 @@ public class DuckDetector {
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         tfodParameters.minResultConfidence = 0.8f;
         tfodParameters.isModelTensorFlow2 = true;
+
         tfodParameters.inputSize = 320;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
